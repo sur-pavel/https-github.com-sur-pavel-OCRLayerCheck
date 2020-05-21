@@ -1,16 +1,11 @@
-﻿using IronOcr;
-using iTextSharp.text;
+﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
-using System;
 using System.IO;
-using System.Text.RegularExpressions;
 
 namespace OCRLayerCheck
 {
     internal class PDFHandler : System.Web.UI.Page
     {
-        private int pageNumber;
         internal Log log;
         internal bool notPDF;
         private Patterns patterns;
@@ -18,46 +13,10 @@ namespace OCRLayerCheck
         private string inputFile;
         private string outputFile;
 
-        public PDFHandler(int pageNumber, Log log, Patterns patterns)
+        public PDFHandler(Log log, Patterns patterns)
         {
-            this.pageNumber = pageNumber;
             this.log = log;
             this.patterns = patterns;
-        }
-
-        internal Article ParsePage(FileInfo file, int pageNumber)
-        {
-            patterns = new Patterns();
-            article = new Article();
-            PdfReader pdfReader = GetPdfReader(file);
-            if (pageNumber != 0 && pageNumber < 10)
-            {
-                string text = string.Empty;
-
-                string pdfText = PdfTextExtractor.GetTextFromPage(pdfReader, pageNumber, new LocationTextExtractionStrategy()).
-                    Replace(".", @".<br>");
-
-                article.PdfText = pdfText;
-                Console.WriteLine(pdfText);
-            }
-
-            pdfReader.Close();
-            return article;
-        }
-
-        private Article GetArticle(string fileName, Article article)
-        {
-            Match articleM = Regex.Match(fileName, patterns.FileName);
-            if (articleM.Success)
-            {
-                log.WriteLine("Right file name");
-                article.FileName = fileName;
-            }
-            else
-            {
-                log.WriteLine("Wrong file name");
-            }
-            return article;
         }
 
         internal int GetMiddlePage(FileInfo file)
@@ -89,58 +48,6 @@ namespace OCRLayerCheck
                 notPDF = true;
                 return null;
             }
-        }
-
-        private string GetText(FileInfo file, int pageNumber)
-        {
-            var Ocr = new AdvancedOcr()
-            {
-                CleanBackgroundNoise = false,
-                ColorDepth = 4,
-                ColorSpace = AdvancedOcr.OcrColorSpace.Color,
-                EnhanceContrast = false,
-                DetectWhiteTextOnDarkBackgrounds = false,
-                RotateAndStraighten = false,
-                EnhanceResolution = false,
-                InputImageType = AdvancedOcr.InputTypes.Document,
-                ReadBarCodes = true,
-                Strategy = AdvancedOcr.OcrStrategy.Fast
-            };
-            Ocr.Language = new IronOcr.Languages.MultiLanguage(IronOcr.Languages.English.OcrLanguagePack,
-                IronOcr.Languages.Russian.OcrLanguagePack,
-                IronOcr.Languages.French.OcrLanguagePack,
-                IronOcr.Languages.German.OcrLanguagePack,
-                IronOcr.Languages.Spanish.OcrLanguagePack,
-                IronOcr.Languages.Italian.OcrLanguagePack);
-
-            log.WriteLine("Getting pdf text");
-            OcrResult Results;
-            try
-            {
-                Results = Ocr.ReadPdf(file.FullName, pageNumber);
-            }
-            catch (Exception ex)
-            {
-                log.WriteLine("EXCEPTION: " + ex);
-                Results = null;
-            }
-            string pdfText = Results.Text;
-
-            return pdfText;
-        }
-
-        private bool CorrectFileName(string fileFullName)
-        {
-            bool validFileName = false;
-            if (fileFullName.Contains(".pdf"))
-            {
-                validFileName = true;
-            }
-            else
-            {
-                Console.WriteLine("Wrong FileName");
-            }
-            return validFileName;
         }
 
         internal void CreatePDF(Article article, FileInfo fileInfo, string outPutPath)

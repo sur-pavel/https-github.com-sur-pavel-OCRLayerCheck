@@ -1,12 +1,14 @@
 ﻿namespace OCRLayerCheck
 {
+    using System.Collections.Generic;
     using System.Reflection;
     using System.Text;
 
     public class Journal
     {
-        public string Title { get; set; }
-        public int Number { get; set; }
+        public string Title { get; internal set; } = string.Empty;
+        public string Number { get; internal set; } = string.Empty;
+        public string Volume { get; internal set; } = string.Empty;
 
         public Journal()
         {
@@ -28,6 +30,23 @@
             }
 
             return builder.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Journal journal &&
+                   Title == journal.Title &&
+                   Number == journal.Number &&
+                   Volume == journal.Volume;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = -6655960;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Title);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Number);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Volume);
+            return hashCode;
         }
     }
 }

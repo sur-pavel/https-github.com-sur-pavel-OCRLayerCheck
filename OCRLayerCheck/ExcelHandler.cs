@@ -29,9 +29,11 @@ namespace OCRLayerCheck
             xlWorkSheet.Cells[1, 2] = "Заглавие";
             xlWorkSheet.Cells[1, 3] = "Место";
             xlWorkSheet.Cells[1, 4] = "Год";
-            xlWorkSheet.Cells[1, 5] = "Заглавие журнала";
-            xlWorkSheet.Cells[1, 6] = "Номер журнала";
-            xlWorkSheet.Cells[1, 7] = "Имя файла";
+            xlWorkSheet.Cells[1, 5] = "Год";
+            xlWorkSheet.Cells[1, 6] = "Кол-во страниц";
+            xlWorkSheet.Cells[1, 7] = "Номер журнала";
+            xlWorkSheet.Cells[1, 8] = "Том журнала";
+            xlWorkSheet.Cells[1, 9] = "Имя файла";
 
             xlWorkSheet.get_Range("A1", "G1").Cells.HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
         }
@@ -40,11 +42,14 @@ namespace OCRLayerCheck
         {
             xlWorkSheet.Cells[row, 1] = article.Autor;
             xlWorkSheet.Cells[row, 2] = article.Title;
-            xlWorkSheet.Cells[row, 3] = article.Edition.Town;
-            xlWorkSheet.Cells[row, 4] = article.Edition.Year;
-            xlWorkSheet.Cells[row, 5] = article.Journal.Title;
-            xlWorkSheet.Cells[row, 6] = article.Journal.Number;
-            xlWorkSheet.Cells[row, 7] = article.FileName;
+            xlWorkSheet.Cells[row, 3] = article.Town;
+            xlWorkSheet.Cells[row, 4] = article.Year;
+            xlWorkSheet.Cells[row, 5] = article.Pages;
+
+            xlWorkSheet.Cells[row, 6] = article.Journal.Title;
+            xlWorkSheet.Cells[row, 7] = article.Journal.Number;
+            xlWorkSheet.Cells[row, 8] = article.Journal.Volume;
+            xlWorkSheet.Cells[row, 9] = article.FileName;
 
             row++;
         }
@@ -53,6 +58,10 @@ namespace OCRLayerCheck
         {
             xlWorkBook.SaveAs("List_Of_Records", AccessMode: Excel.XlSaveAsAccessMode.xlExclusive,
                ConflictResolution: Excel.XlSaveConflictResolution.xlLocalSessionChanges);
+        }
+
+        internal void Quit()
+        {
             xlWorkBook.Close(SaveChanges: true);
             xlApp.Quit();
             Marshal.ReleaseComObject(xlWorkSheet);

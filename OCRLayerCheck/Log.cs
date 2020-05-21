@@ -22,13 +22,16 @@ namespace OCRLayerCheck
             fs.Close();
         }
 
-        public void WriteLine(params string[] log)
+        public void WriteLine(params string[] logs)
         {
             try
             {
-                lock (sync)
+                foreach (string log in logs)
                 {
-                    File.AppendAllText(_logFile, log + "\n", Encoding.GetEncoding("Windows-1251"));
+                    lock (sync)
+                    {
+                        File.AppendAllText(_logFile, log + "\n", Encoding.GetEncoding("Windows-1251"));
+                    }
                 }
             }
             catch (Exception ex)

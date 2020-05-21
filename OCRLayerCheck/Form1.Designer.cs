@@ -1,4 +1,6 @@
-﻿namespace OCRLayerCheck
+﻿using System.Windows.Forms.VisualStyles;
+
+namespace OCRLayerCheck
 {
     partial class Form1
     {
@@ -28,14 +30,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.nameForFileLabel = new System.Windows.Forms.Label();
             this.InputPath = new System.Windows.Forms.TextBox();
-            this.OpenWithOCRDirectory = new System.Windows.Forms.Button();
-            this.OpenWithoutOCRDirectory = new System.Windows.Forms.Button();
             this.CreateFileNameButton = new System.Windows.Forms.Button();
-            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.TitleInput = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.AutorInput = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -47,69 +44,41 @@
             this.TownInput = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.JNumberInput = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.JTownInput = new System.Windows.Forms.TextBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.ChooseInputPath = new System.Windows.Forms.Button();
             this.ChooseOutputPath = new System.Windows.Forms.Button();
             this.OutputPath = new System.Windows.Forms.TextBox();
             this.NextFileButton = new System.Windows.Forms.Button();
+            this.oldFileName = new System.Windows.Forms.Label();
+            this.fontDialog1 = new System.Windows.Forms.FontDialog();
+            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.PagesLabel = new System.Windows.Forms.Label();
+            this.PagesInput = new System.Windows.Forms.TextBox();
+            this.VolumeJLabel = new System.Windows.Forms.Label();
+            this.JVolumeInput = new System.Windows.Forms.TextBox();
+            this.NewFileNameInput = new System.Windows.Forms.TextBox();
+            this.ToPathLabel = new System.Windows.Forms.Label();
+            this.FromPathLabel = new System.Windows.Forms.Label();
+            this.InfoLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // nameForFileLabel
-            // 
-            this.nameForFileLabel.AutoSize = true;
-            this.nameForFileLabel.Location = new System.Drawing.Point(183, 412);
-            this.nameForFileLabel.Name = "nameForFileLabel";
-            this.nameForFileLabel.Size = new System.Drawing.Size(64, 13);
-            this.nameForFileLabel.TabIndex = 5;
-            this.nameForFileLabel.Text = "Имя файла";
             // 
             // InputPath
             // 
-            this.InputPath.Location = new System.Drawing.Point(71, 341);
+            this.InputPath.Location = new System.Drawing.Point(68, 396);
             this.InputPath.Name = "InputPath";
             this.InputPath.Size = new System.Drawing.Size(283, 20);
             this.InputPath.TabIndex = 6;
-            this.InputPath.TextChanged += new System.EventHandler(this.PathWithoutOCR_TextChanged);
-            // 
-            // OpenWithOCRDirectory
-            // 
-            this.OpenWithOCRDirectory.Location = new System.Drawing.Point(628, 559);
-            this.OpenWithOCRDirectory.Name = "OpenWithOCRDirectory";
-            this.OpenWithOCRDirectory.Size = new System.Drawing.Size(75, 23);
-            this.OpenWithOCRDirectory.TabIndex = 18;
-            this.OpenWithOCRDirectory.Text = "Назад";
-            this.OpenWithOCRDirectory.Click += new System.EventHandler(this.OpenWithOCRDirectory_Click);
-            // 
-            // OpenWithoutOCRDirectory
-            // 
-            this.OpenWithoutOCRDirectory.Location = new System.Drawing.Point(856, 559);
-            this.OpenWithoutOCRDirectory.Name = "OpenWithoutOCRDirectory";
-            this.OpenWithoutOCRDirectory.Size = new System.Drawing.Size(75, 23);
-            this.OpenWithoutOCRDirectory.TabIndex = 9;
-            this.OpenWithoutOCRDirectory.Text = "Вперед";
-            this.OpenWithoutOCRDirectory.UseVisualStyleBackColor = true;
-            this.OpenWithoutOCRDirectory.Click += new System.EventHandler(this.NextPageButton);
+            this.InputPath.TextChanged += new System.EventHandler(this.InputPath_TextChanged);
             // 
             // CreateFileNameButton
             // 
-            this.CreateFileNameButton.Location = new System.Drawing.Point(229, 304);
+            this.CreateFileNameButton.Location = new System.Drawing.Point(227, 356);
             this.CreateFileNameButton.Name = "CreateFileNameButton";
             this.CreateFileNameButton.Size = new System.Drawing.Size(75, 23);
             this.CreateFileNameButton.TabIndex = 7;
             this.CreateFileNameButton.Text = "Выбрать";
             this.CreateFileNameButton.UseVisualStyleBackColor = true;
-            this.CreateFileNameButton.Click += new System.EventHandler(this.OpenFromDirectory_Click);
-            // 
-            // webBrowser1
-            // 
-            this.webBrowser1.Location = new System.Drawing.Point(496, 12);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(550, 498);
-            this.webBrowser1.TabIndex = 10;
-            this.webBrowser1.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
+            this.CreateFileNameButton.Click += new System.EventHandler(this.CreateNameForFile);
             // 
             // TitleInput
             // 
@@ -118,15 +87,6 @@
             this.TitleInput.Size = new System.Drawing.Size(283, 20);
             this.TitleInput.TabIndex = 4;
             this.TitleInput.TextChanged += new System.EventHandler(this.PathWithOCR_TextChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(721, 528);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(106, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Выберите страницу";
             // 
             // AutorInput
             // 
@@ -156,7 +116,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 203);
+            this.label5.Location = new System.Drawing.Point(12, 241);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(101, 13);
             this.label5.TabIndex = 13;
@@ -164,7 +124,7 @@
             // 
             // JTitleInput
             // 
-            this.JTitleInput.Location = new System.Drawing.Point(132, 200);
+            this.JTitleInput.Location = new System.Drawing.Point(132, 238);
             this.JTitleInput.Name = "JTitleInput";
             this.JTitleInput.Size = new System.Drawing.Size(283, 20);
             this.JTitleInput.TabIndex = 12;
@@ -204,7 +164,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(12, 281);
+            this.label8.Location = new System.Drawing.Point(12, 280);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(93, 13);
             this.label8.TabIndex = 20;
@@ -212,27 +172,11 @@
             // 
             // JNumberInput
             // 
-            this.JNumberInput.Location = new System.Drawing.Point(132, 278);
+            this.JNumberInput.Location = new System.Drawing.Point(132, 277);
             this.JNumberInput.Name = "JNumberInput";
             this.JNumberInput.Size = new System.Drawing.Size(283, 20);
             this.JNumberInput.TabIndex = 19;
             this.JNumberInput.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(12, 238);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(85, 13);
-            this.label9.TabIndex = 22;
-            this.label9.Text = "Место журнала";
-            // 
-            // JTownInput
-            // 
-            this.JTownInput.Location = new System.Drawing.Point(132, 235);
-            this.JTownInput.Name = "JTownInput";
-            this.JTownInput.Size = new System.Drawing.Size(283, 20);
-            this.JTownInput.TabIndex = 21;
             // 
             // comboBox1
             // 
@@ -249,7 +193,7 @@
             // 
             // ChooseInputPath
             // 
-            this.ChooseInputPath.Location = new System.Drawing.Point(372, 341);
+            this.ChooseInputPath.Location = new System.Drawing.Point(369, 396);
             this.ChooseInputPath.Name = "ChooseInputPath";
             this.ChooseInputPath.Size = new System.Drawing.Size(75, 23);
             this.ChooseInputPath.TabIndex = 25;
@@ -259,7 +203,7 @@
             // 
             // ChooseOutputPath
             // 
-            this.ChooseOutputPath.Location = new System.Drawing.Point(372, 376);
+            this.ChooseOutputPath.Location = new System.Drawing.Point(369, 431);
             this.ChooseOutputPath.Name = "ChooseOutputPath";
             this.ChooseOutputPath.Size = new System.Drawing.Size(75, 23);
             this.ChooseOutputPath.TabIndex = 27;
@@ -269,7 +213,7 @@
             // 
             // OutputPath
             // 
-            this.OutputPath.Location = new System.Drawing.Point(71, 376);
+            this.OutputPath.Location = new System.Drawing.Point(68, 431);
             this.OutputPath.Name = "OutputPath";
             this.OutputPath.Size = new System.Drawing.Size(283, 20);
             this.OutputPath.TabIndex = 26;
@@ -277,26 +221,119 @@
             // 
             // NextFileButton
             // 
-            this.NextFileButton.Location = new System.Drawing.Point(148, 453);
+            this.NextFileButton.Location = new System.Drawing.Point(151, 493);
             this.NextFileButton.Name = "NextFileButton";
             this.NextFileButton.Size = new System.Drawing.Size(136, 23);
             this.NextFileButton.TabIndex = 28;
             this.NextFileButton.Text = "След. файл";
             this.NextFileButton.UseVisualStyleBackColor = true;
-            this.NextFileButton.Click += new System.EventHandler(this.NextFileButton_Click);
+            this.NextFileButton.Click += new System.EventHandler(this.NextFileButton_Click_1);
+            // 
+            // oldFileName
+            // 
+            this.oldFileName.AutoSize = true;
+            this.oldFileName.Location = new System.Drawing.Point(160, 467);
+            this.oldFileName.Name = "oldFileName";
+            this.oldFileName.Size = new System.Drawing.Size(101, 13);
+            this.oldFileName.TabIndex = 29;
+            this.oldFileName.Text = "Старое имя файла";
+            // 
+            // webBrowser1
+            // 
+            this.webBrowser1.Location = new System.Drawing.Point(464, 12);
+            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser1.Name = "webBrowser1";
+            this.webBrowser1.Size = new System.Drawing.Size(798, 504);
+            this.webBrowser1.TabIndex = 30;
+            // 
+            // PagesLabel
+            // 
+            this.PagesLabel.AutoSize = true;
+            this.PagesLabel.Location = new System.Drawing.Point(28, 205);
+            this.PagesLabel.Name = "PagesLabel";
+            this.PagesLabel.Size = new System.Drawing.Size(85, 13);
+            this.PagesLabel.TabIndex = 32;
+            this.PagesLabel.Text = "Кол-во страниц";
+            this.PagesLabel.Click += new System.EventHandler(this.label2_Click);
+            // 
+            // PagesInput
+            // 
+            this.PagesInput.Location = new System.Drawing.Point(132, 205);
+            this.PagesInput.Name = "PagesInput";
+            this.PagesInput.Size = new System.Drawing.Size(283, 20);
+            this.PagesInput.TabIndex = 31;
+            this.PagesInput.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
+            // VolumeJLabel
+            // 
+            this.VolumeJLabel.AutoSize = true;
+            this.VolumeJLabel.Location = new System.Drawing.Point(28, 316);
+            this.VolumeJLabel.Name = "VolumeJLabel";
+            this.VolumeJLabel.Size = new System.Drawing.Size(74, 13);
+            this.VolumeJLabel.TabIndex = 34;
+            this.VolumeJLabel.Text = "Том журнала";
+            // 
+            // JVolumeInput
+            // 
+            this.JVolumeInput.Location = new System.Drawing.Point(132, 316);
+            this.JVolumeInput.Name = "JVolumeInput";
+            this.JVolumeInput.Size = new System.Drawing.Size(283, 20);
+            this.JVolumeInput.TabIndex = 33;
+            // 
+            // NewFileNameInput
+            // 
+            this.NewFileNameInput.Location = new System.Drawing.Point(31, 556);
+            this.NewFileNameInput.Name = "NewFileNameInput";
+            this.NewFileNameInput.Size = new System.Drawing.Size(548, 20);
+            this.NewFileNameInput.TabIndex = 35;
+            // 
+            // ToPathLabel
+            // 
+            this.ToPathLabel.AutoSize = true;
+            this.ToPathLabel.Location = new System.Drawing.Point(28, 436);
+            this.ToPathLabel.Name = "ToPathLabel";
+            this.ToPathLabel.Size = new System.Drawing.Size(14, 13);
+            this.ToPathLabel.TabIndex = 36;
+            this.ToPathLabel.Text = "В";
+            // 
+            // FromPathLabel
+            // 
+            this.FromPathLabel.AutoSize = true;
+            this.FromPathLabel.Location = new System.Drawing.Point(28, 401);
+            this.FromPathLabel.Name = "FromPathLabel";
+            this.FromPathLabel.Size = new System.Drawing.Size(21, 13);
+            this.FromPathLabel.TabIndex = 37;
+            this.FromPathLabel.Text = "Из";
+            // 
+            // InfoLabel
+            // 
+            this.InfoLabel.AutoSize = true;
+            this.InfoLabel.Location = new System.Drawing.Point(105, 530);
+            this.InfoLabel.Name = "InfoLabel";
+            this.InfoLabel.Size = new System.Drawing.Size(25, 13);
+            this.InfoLabel.TabIndex = 38;
+            this.InfoLabel.Text = "Info";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1073, 610);
+            this.ClientSize = new System.Drawing.Size(1274, 605);
+            this.Controls.Add(this.InfoLabel);
+            this.Controls.Add(this.FromPathLabel);
+            this.Controls.Add(this.ToPathLabel);
+            this.Controls.Add(this.NewFileNameInput);
+            this.Controls.Add(this.VolumeJLabel);
+            this.Controls.Add(this.JVolumeInput);
+            this.Controls.Add(this.PagesLabel);
+            this.Controls.Add(this.PagesInput);
+            this.Controls.Add(this.webBrowser1);
+            this.Controls.Add(this.oldFileName);
             this.Controls.Add(this.NextFileButton);
             this.Controls.Add(this.ChooseOutputPath);
             this.Controls.Add(this.OutputPath);
             this.Controls.Add(this.ChooseInputPath);
             this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.label9);
-            this.Controls.Add(this.JTownInput);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.JNumberInput);
             this.Controls.Add(this.label7);
@@ -306,18 +343,13 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.JTitleInput);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.webBrowser1);
-            this.Controls.Add(this.OpenWithoutOCRDirectory);
-            this.Controls.Add(this.OpenWithOCRDirectory);
             this.Controls.Add(this.CreateFileNameButton);
             this.Controls.Add(this.InputPath);
-            this.Controls.Add(this.nameForFileLabel);
             this.Controls.Add(this.TitleInput);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.AutorInput);
             this.Name = "Form1";
-            this.Text = "Выберите страницу";
+            this.Text = "OCRLayerCheck";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -325,14 +357,9 @@
         }
 
         #endregion
-        private System.Windows.Forms.Label nameForFileLabel;
         private System.Windows.Forms.TextBox InputPath;
-        private System.Windows.Forms.Button OpenWithOCRDirectory;
-        private System.Windows.Forms.Button OpenWithoutOCRDirectory;
         private System.Windows.Forms.Button CreateFileNameButton;
-        private System.Windows.Forms.WebBrowser webBrowser1;
         private System.Windows.Forms.TextBox TitleInput;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox AutorInput;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label4;
@@ -344,13 +371,22 @@
         private System.Windows.Forms.TextBox TownInput;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox JNumberInput;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TextBox JTownInput;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button ChooseInputPath;
         private System.Windows.Forms.Button ChooseOutputPath;
         private System.Windows.Forms.TextBox OutputPath;
         private System.Windows.Forms.Button NextFileButton;
+        private System.Windows.Forms.Label oldFileName;
+        private System.Windows.Forms.FontDialog fontDialog1;
+        private System.Windows.Forms.WebBrowser webBrowser1;
+        private System.Windows.Forms.Label PagesLabel;
+        private System.Windows.Forms.TextBox PagesInput;
+        private System.Windows.Forms.Label VolumeJLabel;
+        private System.Windows.Forms.TextBox JVolumeInput;
+        private System.Windows.Forms.TextBox NewFileNameInput;
+        private System.Windows.Forms.Label ToPathLabel;
+        private System.Windows.Forms.Label FromPathLabel;
+        private System.Windows.Forms.Label InfoLabel;
     }
 }
 

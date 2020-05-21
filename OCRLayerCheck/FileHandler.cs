@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace OCRLayerCheck
@@ -8,40 +10,30 @@ namespace OCRLayerCheck
     {
         internal Log log;
 
-        internal FileInfo[] GetFileNames(string path)
+        internal IEnumerator<FileInfo> GetFileNames(string path)
         {
             FileInfo[] files = null;
+            IEnumerator<FileInfo> outfiles = null;
             try
             {
-                DirectoryInfo info = new DirectoryInfo(path);
-                files = info.GetFiles("*.pdf");
+                files = new DirectoryInfo(path).GetFiles("*.pdf");
+                outfiles = files.Where(x => x != null && x.Name.Contains(".pdf") &&
+                x.Name != null && x.FullName != null && x.Exists).GetEnumerator();
             }
             catch (Exception ex)
             {
                 log.WriteLine(ex.Message, ex.StackTrace);
             }
-            return files;
-        }
-
-        internal void Move(FileInfo file, string path)
-        {
-            try
-            {
-                File.Move(file.FullName, path + file.Name);
-            }
-            catch (Exception ex)
-            {
-                log.WriteLine("EXCEPTION: " + ex);
-            }
+            return outfiles;
         }
 
         internal void Save(FileInfo currentFileInfo, string nameForFile, string outputPath)
         {
-            string outputFile = currentFileInfo.DirectoryName + nameForFile;
+            string outputFile = outputPath + nameForFile;
 
             try
             {
-                File.Copy(outputFile, outputPath);
+                File.Copy(currentFileInfo.FullName, outputFile);
             }
             catch (Exception ex)
             {

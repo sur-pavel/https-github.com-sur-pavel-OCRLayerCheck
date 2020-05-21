@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -13,21 +14,18 @@ namespace OCRLayerCheck
         private FileHandler fileHandler;
         private IrbisHandler irbisHandler = new IrbisHandler();
         private ExcelHandler excelHandler;
+
         private Patterns patterns = new Patterns();
+        private Article article = new Article();
         private ArticleParser articleParser;
 
         private PDFHandler pdfHandler;
         private int pageNumber = 1;
-        private string pdfText = string.Empty;
-        private string inputPath = @"d:\на переименование\";
-        private string outputPath = @"d:\переим\";
+        private string inputPath = @"c:\Users\sur-p\Downloads\на переименование\";
+        private string outputPath = @"c:\Users\sur-p\Downloads\переим\";
         private string nameForFile = string.Empty;
-        private TaskCompletionSource<bool> clickWaitTask;
-        private Article article = new Article();
-        private FileInfo currentFileInfo;
+        private IEnumerator<FileInfo> files;
         private CancellationTokenSource tokenSource;
-        private ManualResetEvent firstResetEvent = new ManualResetEvent(true);
-        private ManualResetEvent secondResetEvent = new ManualResetEvent(true);
 
         public Form1()
         {
@@ -35,18 +33,18 @@ namespace OCRLayerCheck
             excelHandler = new ExcelHandler(log);
 
             excelHandler.CreatExcelObject();
-            articleParser = new ArticleParser(log, pdfHandler);
-            pdfHandler = new PDFHandler(pageNumber, log, patterns);
-            pdfHandler.log = this.log;
-            fileHandler.log = this.log;
+            articleParser = new ArticleParser(log, patterns);
+            pdfHandler = new PDFHandler(log, patterns);
+            pdfHandler.log = log;
+            fileHandler.log = log;
             log.CreateLogFile();
 
-            FullScreen();
             InitializeComponent();
-            InputPath.Text = inputPath;
-            OutputPath.Text = outputPath;
+            comboBox1.Hide();
+            FullScreen();
 
-            log.WriteLine("All tasks ended");
+            //InputPath.Text = inputPath;
+            //OutputPath.Text = outputPath;
         }
 
         private void GetNameForPdf()
@@ -56,36 +54,9 @@ namespace OCRLayerCheck
                 if (Regex.IsMatch(InputPath.Text, patterns.DirectoryPath) &&
                                 Regex.IsMatch(OutputPath.Text, patterns.DirectoryPath))
                 {
-                    FileInfo[] files = fileHandler.GetFileNames(InputPath.Text);
-
-                    foreach (FileInfo fileInfo in files)
-                    {
-                        Thread.Sleep(500);
-                        currentFileInfo = fileInfo;
-                        firstResetEvent.Reset();
-                        Invoke((Action)delegate
-                        {
-                            log.WriteLine("File: " + fileInfo.FullName);
-                            log.WriteLine("PageNumber = " + pageNumber);
-                            NavigatePages(fileInfo);
-
-                            webBrowser1.DocumentText = pdfText;
-                            article.Autor = AutorInput.Text;
-                            article.Title = TitleInput.Text;
-                            article.Edition.Town = TownInput.Text;
-                            article.Edition.Year = int.Parse(YearInput.Text);
-
-                            nameForFileLabel.Text = nameForFile;
-                            article.FileName = nameForFile;
-
-                            excelHandler.AddRow(article);
-                            log.WriteLine("Name for File:" + nameForFile);
-                            log.WriteLine(article.ToString());
-                        });
-                        firstResetEvent.WaitOne();
-                    }
-
-                    excelHandler.SaveFile();
+                    FileInfo fileInfo = files.Current;
+                    log.WriteLine("File: " + fileInfo.FullName);
+                    log.WriteLine("PageNumber = " + pageNumber);
                 }
             }
             catch (NullReferenceException nullex)
@@ -100,21 +71,10 @@ namespace OCRLayerCheck
             }
         }
 
-        private void NavigatePages(FileInfo fileInfo)
-        {
-            int prevPageNumber = pageNumber;
-            do
-            {
-                secondResetEvent.Reset();
-                pdfText = pdfHandler.ParsePage(fileInfo, pageNumber).PdfText;
-                secondResetEvent.WaitOne();
-            } while (pageNumber != prevPageNumber);
-        }
-
         private void FullScreen()
         {
             WindowState = FormWindowState.Normal;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.FormBorderStyle = FormBorderStyle.None;
             this.Bounds = Screen.PrimaryScreen.Bounds;
 
             this.WindowState = FormWindowState.Maximized;
@@ -125,15 +85,8 @@ namespace OCRLayerCheck
         {
         }
 
-        private void OpenFromDirectory_Click(object sender, EventArgs e)
-        {
-            nameForFile = articleParser.GetFileName(article);
-            nameForFileLabel.Text = nameForFile;
-        }
-
         private void PreviousPageButton(object sender, EventArgs e)
         {
-            secondResetEvent.Set();
             if (pageNumber > 0 && pageNumber < 10)
             {
                 pageNumber--;
@@ -142,7 +95,6 @@ namespace OCRLayerCheck
 
         private void NextPageButton(object sender, EventArgs e)
         {
-            secondResetEvent.Set();
             if (pageNumber > 0 && pageNumber < 10)
             {
                 pageNumber++;
@@ -157,16 +109,6 @@ namespace OCRLayerCheck
         {
         }
 
-        private void PathWithoutOCR_TextChanged(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(InputPath.Text))
-            {
-                tokenSource = new CancellationTokenSource();
-                CancellationToken cancellationToken = tokenSource.Token;
-                Task.Factory.StartNew(() => GetNameForPdf(), cancellationToken);
-            }
-        }
-
         private void PathWithOCR_TextChanged(object sender, EventArgs e)
         {
         }
@@ -177,18 +119,6 @@ namespace OCRLayerCheck
 
         private void button2_Click(object sender, EventArgs e)
         {
-            //using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            //{
-            //    openFileDialog.InitialDirectory = "c:\\";
-            //    openFileDialog.Filter = "pdf files (*.pdf)|*.pdf|All files (*.*)|*.*";
-            //    openFileDialog.FilterIndex = 1;
-            //    openFileDialog.RestoreDirectory = true;
-
-            //    if (openFileDialog.ShowDialog() == DialogResult.OK)
-            //    {
-            //        AutorInput.Text = openFileDialog.FileName;
-            //    }
-            //}
             FolderBrowserDialog FBD = new FolderBrowserDialog();
             if (FBD.ShowDialog() == DialogResult.OK)
             {
@@ -207,27 +137,134 @@ namespace OCRLayerCheck
 
         private void NextFileButton_Click(object sender, EventArgs e)
         {
-            firstResetEvent.Set();
-            fileHandler.Save(currentFileInfo, nameForFile, OutputPath.Text);
+            article.FileName = nameForFile;
+
+            if (nameForFile.Contains(".pdf"))
+            {
+                excelHandler.AddRow(article);
+                fileHandler.Save(files.Current, nameForFile, OutputPath.Text);
+                files.MoveNext();
+                webBrowser1.Navigate(files.Current.FullName);
+                oldFileName.Text = files.Current.Name;
+                excelHandler.SaveFile();
+                InfoLabel.Text = "Info";
+            }
+            else
+            {
+                InfoLabel.Text = nameForFile;
+            }
         }
 
         private void OpenWithOCRDirectory_Click(object sender, EventArgs e)
         {
-            secondResetEvent.Set();
             if (pageNumber > 0 && pageNumber < 10)
             {
                 pageNumber--;
             }
         }
 
+        private void InputPath_TextChanged(object sender, EventArgs e)
+        {
+            if (Regex.IsMatch(InputPath.Text, patterns.DirectoryPath) &&
+                                Regex.IsMatch(OutputPath.Text, patterns.DirectoryPath))
+            {
+                files = fileHandler.GetFileNames(InputPath.Text);
+                files.MoveNext();
+                webBrowser1.Navigate(files.Current.FullName);
+                oldFileName.Text = files.Current.Name;
+                FileInfo fileInfo = files.Current;
+                log.WriteLine("File: " + fileInfo.FullName);
+                log.WriteLine("PageNumber = " + pageNumber);
+            }
+            else
+            {
+                InfoLabel.Text = "Выберите папку с pdf-файлами и папку назначения";
+            }
+        }
+
         private void OutputPath_TextChanged(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(OutputPath.Text))
+            if (Regex.IsMatch(InputPath.Text, patterns.DirectoryPath) &&
+                                Regex.IsMatch(OutputPath.Text, patterns.DirectoryPath))
             {
-                tokenSource = new CancellationTokenSource();
-                CancellationToken cancellationToken = tokenSource.Token;
-                Task.Factory.StartNew(() => GetNameForPdf(), cancellationToken);
+                files = fileHandler.GetFileNames(InputPath.Text);
+                files.MoveNext();
+                webBrowser1.Navigate(files.Current.FullName);
+                oldFileName.Text = files.Current.Name;
+                FileInfo fileInfo = files.Current;
+                log.WriteLine("File: " + fileInfo.FullName);
+                log.WriteLine("PageNumber = " + pageNumber);
             }
+            else
+            {
+                InfoLabel.Text = "Выберите папку с pdf-файлами и папку назначения";
+            }
+        }
+
+        private void CreateNameForFile(object sender, EventArgs e)
+        {
+            article.Autor = AutorInput.Text;
+            article.Title = TitleInput.Text;
+            article.Town = TownInput.Text;
+            article.Year = YearInput.Text;
+            article.Pages = PagesInput.Text;
+
+            article.Journal.Title = JTitleInput.Text;
+            article.Journal.Number = JNumberInput.Text;
+            article.Journal.Volume = JVolumeInput.Text;
+
+            nameForFile = articleParser.GetFileName(article);
+            nameForFile = articleParser.CheckFileName(nameForFile);
+            if (!nameForFile.Contains(".pdf"))
+            {
+                InfoLabel.Text = nameForFile;
+            }
+            else
+            {
+                NewFileNameInput.Text = nameForFile;
+                log.WriteLine("Name for File:" + nameForFile);
+                log.WriteLine(article.ToString());
+            }
+        }
+
+        private void NextFileButton_Click_1(object sender, EventArgs e)
+        {
+            article.FileName = nameForFile;
+
+            if (nameForFile.Contains(".pdf"))
+            {
+                excelHandler.AddRow(article);
+                fileHandler.Save(files.Current, nameForFile, OutputPath.Text);
+                files.MoveNext();
+                webBrowser1.Navigate(files.Current.FullName);
+                oldFileName.Text = files.Current.Name;
+                excelHandler.SaveFile();
+                InfoLabel.Text = "Info";
+                NewFileNameInput.Text = "";
+            }
+            else
+            {
+                InfoLabel.Text = nameForFile;
+            }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            excelHandler.SaveFile();
+            excelHandler.Quit();
+            base.OnClosed(e);
+        }
+
+        private void pdfViewer1_Load(object sender, EventArgs e)
+        {
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace OCRLayerCheck
@@ -9,9 +10,11 @@ namespace OCRLayerCheck
         public string Title { get; set; } = string.Empty;
         public string FileName { get; set; } = string.Empty;
 
-        public Edition Edition = new Edition();
+        public string Town { get; set; } = string.Empty;
+        public string Year { get; set; } = string.Empty;
+        public string Pages { get; set; } = string.Empty;
+
         public Journal Journal = new Journal();
-        public string PdfText { get; set; }
 
         private PropertyInfo[] _PropertyInfos = null;
 
@@ -29,6 +32,14 @@ namespace OCRLayerCheck
             }
 
             return builder.ToString();
+        }
+
+        public IEnumerator<PropertyInfo> GetEnumerator()
+        {
+            foreach (var property in typeof(Article).GetProperties())
+            {
+                yield return property;
+            }
         }
 
         public override bool Equals(object obj)
