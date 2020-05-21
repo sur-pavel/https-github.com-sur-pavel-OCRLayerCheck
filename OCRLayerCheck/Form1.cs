@@ -21,11 +21,8 @@ namespace OCRLayerCheck
 
         private PDFHandler pdfHandler;
         private int pageNumber = 1;
-        private string inputPath = @"c:\Users\sur-p\Downloads\на переименование\";
-        private string outputPath = @"c:\Users\sur-p\Downloads\переим\";
         private string nameForFile = string.Empty;
         private IEnumerator<FileInfo> files;
-        private CancellationTokenSource tokenSource;
 
         public Form1()
         {
@@ -42,33 +39,6 @@ namespace OCRLayerCheck
             InitializeComponent();
             comboBox1.Hide();
             FullScreen();
-
-            //InputPath.Text = inputPath;
-            //OutputPath.Text = outputPath;
-        }
-
-        private void GetNameForPdf()
-        {
-            try
-            {
-                if (Regex.IsMatch(InputPath.Text, patterns.DirectoryPath) &&
-                                Regex.IsMatch(OutputPath.Text, patterns.DirectoryPath))
-                {
-                    FileInfo fileInfo = files.Current;
-                    log.WriteLine("File: " + fileInfo.FullName);
-                    log.WriteLine("PageNumber = " + pageNumber);
-                }
-            }
-            catch (NullReferenceException nullex)
-            {
-                log.WriteLine(nullex.Message, nullex.StackTrace);
-                MessageBox.Show($"{nullex.Message}\n{nullex.StackTrace}");
-            }
-            catch (Exception ex)
-            {
-                log.WriteLine(ex.Message, ex.StackTrace);
-                MessageBox.Show($"{ex.Message}\n{ex.StackTrace}");
-            }
         }
 
         private void FullScreen()
@@ -85,27 +55,7 @@ namespace OCRLayerCheck
         {
         }
 
-        private void PreviousPageButton(object sender, EventArgs e)
-        {
-            if (pageNumber > 0 && pageNumber < 10)
-            {
-                pageNumber--;
-            }
-        }
-
-        private void NextPageButton(object sender, EventArgs e)
-        {
-            if (pageNumber > 0 && pageNumber < 10)
-            {
-                pageNumber++;
-            }
-        }
-
         private void Form1_Load(object sender, EventArgs e)
-        {
-        }
-
-        private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
         }
 
@@ -132,34 +82,6 @@ namespace OCRLayerCheck
             if (FBD.ShowDialog() == DialogResult.OK)
             {
                 OutputPath.Text = FBD.SelectedPath + @"\";
-            }
-        }
-
-        private void NextFileButton_Click(object sender, EventArgs e)
-        {
-            article.FileName = nameForFile;
-
-            if (nameForFile.Contains(".pdf"))
-            {
-                excelHandler.AddRow(article);
-                fileHandler.Save(files.Current, nameForFile, OutputPath.Text);
-                files.MoveNext();
-                webBrowser1.Navigate(files.Current.FullName);
-                oldFileName.Text = files.Current.Name;
-                excelHandler.SaveFile();
-                InfoLabel.Text = "Info";
-            }
-            else
-            {
-                InfoLabel.Text = nameForFile;
-            }
-        }
-
-        private void OpenWithOCRDirectory_Click(object sender, EventArgs e)
-        {
-            if (pageNumber > 0 && pageNumber < 10)
-            {
-                pageNumber--;
             }
         }
 
