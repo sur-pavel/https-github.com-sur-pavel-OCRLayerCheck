@@ -1,5 +1,7 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.parser;
+using System;
 using System.IO;
 
 namespace OCRLayerCheck
@@ -19,20 +21,28 @@ namespace OCRLayerCheck
             this.patterns = patterns;
         }
 
-        internal int GetMiddlePage(FileInfo file)
+        internal Article ParsePage(FileInfo file)
         {
-            int pages;
-            int middlePage = 0;
+            patterns = new Patterns();
+            article = new Article();
             PdfReader pdfReader = GetPdfReader(file);
             if (pdfReader != null)
             {
-                pages = pdfReader.NumberOfPages;
+                for (int pageNumber = 1; pageNumber <= 3; pageNumber++)
+                {
+                    string pdfText = PdfTextExtractor.GetTextFromPage(pdfReader, pageNumber, new LocationTextExtractionStrategy());
+                    if (!string.IsNullOrEmpty(pdfText) && pdfText.Contains("openedition.org"))
+                    {
+                        article.PdfText.Append(pdfText);
+                    }
+                }
+                if (string.IsNullOrEmpty(article.PdfText.ToString()))
+                {
+                    log.WriteLine($"{file.Name} not contains any text");
+                }
                 pdfReader.Close();
-                middlePage = pages / 2;
-                log.WriteLine("Middle page: " + middlePage);
             }
-
-            return middlePage;
+            return article;
         }
 
         private PdfReader GetPdfReader(FileInfo file)
@@ -44,7 +54,7 @@ namespace OCRLayerCheck
             }
             catch (iTextSharp.text.exceptions.InvalidPdfException)
             {
-                log.WriteLine("Not a pdf file");
+                log.WriteLine("Not a pdf file: " + file.Name);
                 notPDF = true;
                 return null;
             }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AM.Text;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
@@ -8,13 +9,14 @@ namespace OCRLayerCheck
     {
         public string Autor { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
-        public string FileName { get; set; } = string.Empty;
 
         public string Town { get; set; } = string.Empty;
         public string Year { get; set; } = string.Empty;
         public string Pages { get; set; } = string.Empty;
 
         public Journal Journal = new Journal();
+        public string FileName { get; set; } = string.Empty;
+        public StringBuilder PdfText { get; set; } = new StringBuilder();
 
         private PropertyInfo[] _PropertyInfos = null;
 

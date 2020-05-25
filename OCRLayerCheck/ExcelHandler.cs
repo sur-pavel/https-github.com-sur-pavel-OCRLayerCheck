@@ -30,7 +30,7 @@ namespace OCRLayerCheck
             xlWorkSheet.Cells[1, 3] = "Место";
             xlWorkSheet.Cells[1, 4] = "Год";
             xlWorkSheet.Cells[1, 5] = "Год";
-            xlWorkSheet.Cells[1, 6] = "Кол-во страниц";
+            xlWorkSheet.Cells[1, 6] = "Страницы";
             xlWorkSheet.Cells[1, 7] = "Номер журнала";
             xlWorkSheet.Cells[1, 8] = "Том журнала";
             xlWorkSheet.Cells[1, 9] = "Имя файла";

@@ -31,7 +31,6 @@ namespace OCRLayerCheck
         private void InitializeComponent()
         {
             this.InputPath = new System.Windows.Forms.TextBox();
-            this.CreateFileNameButton = new System.Windows.Forms.Button();
             this.TitleInput = new System.Windows.Forms.TextBox();
             this.AutorInput = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -44,14 +43,12 @@ namespace OCRLayerCheck
             this.TownInput = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.JNumberInput = new System.Windows.Forms.TextBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.ChooseInputPath = new System.Windows.Forms.Button();
             this.ChooseOutputPath = new System.Windows.Forms.Button();
             this.OutputPath = new System.Windows.Forms.TextBox();
             this.NextFileButton = new System.Windows.Forms.Button();
             this.oldFileName = new System.Windows.Forms.Label();
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
-            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.PagesLabel = new System.Windows.Forms.Label();
             this.PagesInput = new System.Windows.Forms.TextBox();
             this.VolumeJLabel = new System.Windows.Forms.Label();
@@ -60,6 +57,8 @@ namespace OCRLayerCheck
             this.ToPathLabel = new System.Windows.Forms.Label();
             this.FromPathLabel = new System.Windows.Forms.Label();
             this.InfoLabel = new System.Windows.Forms.Label();
+            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.webBrowser2 = new System.Windows.Forms.WebBrowser();
             this.SuspendLayout();
             // 
             // InputPath
@@ -69,16 +68,6 @@ namespace OCRLayerCheck
             this.InputPath.Size = new System.Drawing.Size(283, 20);
             this.InputPath.TabIndex = 6;
             this.InputPath.TextChanged += new System.EventHandler(this.InputPath_TextChanged);
-            // 
-            // CreateFileNameButton
-            // 
-            this.CreateFileNameButton.Location = new System.Drawing.Point(227, 356);
-            this.CreateFileNameButton.Name = "CreateFileNameButton";
-            this.CreateFileNameButton.Size = new System.Drawing.Size(75, 23);
-            this.CreateFileNameButton.TabIndex = 7;
-            this.CreateFileNameButton.Text = "Выбрать";
-            this.CreateFileNameButton.UseVisualStyleBackColor = true;
-            this.CreateFileNameButton.Click += new System.EventHandler(this.CreateNameForFile);
             // 
             // TitleInput
             // 
@@ -94,6 +83,7 @@ namespace OCRLayerCheck
             this.AutorInput.Name = "AutorInput";
             this.AutorInput.Size = new System.Drawing.Size(283, 20);
             this.AutorInput.TabIndex = 3;
+            this.AutorInput.TextChanged += new System.EventHandler(this.AutorInput_TextChanged);
             // 
             // label1
             // 
@@ -128,6 +118,7 @@ namespace OCRLayerCheck
             this.JTitleInput.Name = "JTitleInput";
             this.JTitleInput.Size = new System.Drawing.Size(283, 20);
             this.JTitleInput.TabIndex = 12;
+            this.JTitleInput.TextChanged += new System.EventHandler(this.JTitleInput_TextChanged);
             // 
             // label6
             // 
@@ -144,6 +135,7 @@ namespace OCRLayerCheck
             this.YearInput.Name = "YearInput";
             this.YearInput.Size = new System.Drawing.Size(283, 20);
             this.YearInput.TabIndex = 14;
+            this.YearInput.TextChanged += new System.EventHandler(this.YearInput_TextChanged);
             // 
             // label7
             // 
@@ -160,6 +152,7 @@ namespace OCRLayerCheck
             this.TownInput.Name = "TownInput";
             this.TownInput.Size = new System.Drawing.Size(283, 20);
             this.TownInput.TabIndex = 16;
+            this.TownInput.TextChanged += new System.EventHandler(this.TownInput_TextChanged);
             // 
             // label8
             // 
@@ -177,19 +170,6 @@ namespace OCRLayerCheck
             this.JNumberInput.Size = new System.Drawing.Size(283, 20);
             this.JNumberInput.TabIndex = 19;
             this.JNumberInput.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.DisplayMember = "0";
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Журналы",
-            "Книги"});
-            this.comboBox1.Location = new System.Drawing.Point(217, 12);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 24;
-            this.comboBox1.ValueMember = "0";
             // 
             // ChooseInputPath
             // 
@@ -221,7 +201,7 @@ namespace OCRLayerCheck
             // 
             // NextFileButton
             // 
-            this.NextFileButton.Location = new System.Drawing.Point(151, 493);
+            this.NextFileButton.Location = new System.Drawing.Point(148, 500);
             this.NextFileButton.Name = "NextFileButton";
             this.NextFileButton.Size = new System.Drawing.Size(136, 23);
             this.NextFileButton.TabIndex = 28;
@@ -238,22 +218,14 @@ namespace OCRLayerCheck
             this.oldFileName.TabIndex = 29;
             this.oldFileName.Text = "Старое имя файла";
             // 
-            // webBrowser1
-            // 
-            this.webBrowser1.Location = new System.Drawing.Point(464, 12);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(798, 504);
-            this.webBrowser1.TabIndex = 30;
-            // 
             // PagesLabel
             // 
             this.PagesLabel.AutoSize = true;
             this.PagesLabel.Location = new System.Drawing.Point(28, 205);
             this.PagesLabel.Name = "PagesLabel";
-            this.PagesLabel.Size = new System.Drawing.Size(85, 13);
+            this.PagesLabel.Size = new System.Drawing.Size(57, 13);
             this.PagesLabel.TabIndex = 32;
-            this.PagesLabel.Text = "Кол-во страниц";
+            this.PagesLabel.Text = "Страницы";
             this.PagesLabel.Click += new System.EventHandler(this.label2_Click);
             // 
             // PagesInput
@@ -267,11 +239,11 @@ namespace OCRLayerCheck
             // VolumeJLabel
             // 
             this.VolumeJLabel.AutoSize = true;
-            this.VolumeJLabel.Location = new System.Drawing.Point(28, 316);
+            this.VolumeJLabel.Location = new System.Drawing.Point(12, 319);
             this.VolumeJLabel.Name = "VolumeJLabel";
-            this.VolumeJLabel.Size = new System.Drawing.Size(74, 13);
+            this.VolumeJLabel.Size = new System.Drawing.Size(108, 13);
             this.VolumeJLabel.TabIndex = 34;
-            this.VolumeJLabel.Text = "Том журнала";
+            this.VolumeJLabel.Text = "Том журнала/книги";
             // 
             // JVolumeInput
             // 
@@ -279,6 +251,7 @@ namespace OCRLayerCheck
             this.JVolumeInput.Name = "JVolumeInput";
             this.JVolumeInput.Size = new System.Drawing.Size(283, 20);
             this.JVolumeInput.TabIndex = 33;
+            this.JVolumeInput.TextChanged += new System.EventHandler(this.JVolumeInput_TextChanged);
             // 
             // NewFileNameInput
             // 
@@ -310,15 +283,31 @@ namespace OCRLayerCheck
             this.InfoLabel.AutoSize = true;
             this.InfoLabel.Location = new System.Drawing.Point(105, 530);
             this.InfoLabel.Name = "InfoLabel";
-            this.InfoLabel.Size = new System.Drawing.Size(25, 13);
+            this.InfoLabel.Size = new System.Drawing.Size(0, 13);
             this.InfoLabel.TabIndex = 38;
-            this.InfoLabel.Text = "Info";
+            // 
+            // webBrowser1
+            // 
+            this.webBrowser1.Location = new System.Drawing.Point(466, 27);
+            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser1.Name = "webBrowser1";
+            this.webBrowser1.Size = new System.Drawing.Size(773, 516);
+            this.webBrowser1.TabIndex = 39;
+            // 
+            // webBrowser2
+            // 
+            this.webBrowser2.Location = new System.Drawing.Point(466, 27);
+            this.webBrowser2.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser2.Name = "webBrowser2";
+            this.webBrowser2.Size = new System.Drawing.Size(773, 516);
+            this.webBrowser2.TabIndex = 40;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1274, 605);
+            this.Controls.Add(this.webBrowser1);
             this.Controls.Add(this.InfoLabel);
             this.Controls.Add(this.FromPathLabel);
             this.Controls.Add(this.ToPathLabel);
@@ -327,13 +316,11 @@ namespace OCRLayerCheck
             this.Controls.Add(this.JVolumeInput);
             this.Controls.Add(this.PagesLabel);
             this.Controls.Add(this.PagesInput);
-            this.Controls.Add(this.webBrowser1);
             this.Controls.Add(this.oldFileName);
             this.Controls.Add(this.NextFileButton);
             this.Controls.Add(this.ChooseOutputPath);
             this.Controls.Add(this.OutputPath);
             this.Controls.Add(this.ChooseInputPath);
-            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.JNumberInput);
             this.Controls.Add(this.label7);
@@ -343,11 +330,11 @@ namespace OCRLayerCheck
             this.Controls.Add(this.label5);
             this.Controls.Add(this.JTitleInput);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.CreateFileNameButton);
             this.Controls.Add(this.InputPath);
             this.Controls.Add(this.TitleInput);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.AutorInput);
+            this.Controls.Add(this.webBrowser2);
             this.Name = "Form1";
             this.Text = "OCRLayerCheck";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -358,7 +345,6 @@ namespace OCRLayerCheck
 
         #endregion
         private System.Windows.Forms.TextBox InputPath;
-        private System.Windows.Forms.Button CreateFileNameButton;
         private System.Windows.Forms.TextBox TitleInput;
         private System.Windows.Forms.TextBox AutorInput;
         private System.Windows.Forms.Label label1;
@@ -371,14 +357,12 @@ namespace OCRLayerCheck
         private System.Windows.Forms.TextBox TownInput;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox JNumberInput;
-        private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button ChooseInputPath;
         private System.Windows.Forms.Button ChooseOutputPath;
         private System.Windows.Forms.TextBox OutputPath;
         private System.Windows.Forms.Button NextFileButton;
         private System.Windows.Forms.Label oldFileName;
         private System.Windows.Forms.FontDialog fontDialog1;
-        private System.Windows.Forms.WebBrowser webBrowser1;
         private System.Windows.Forms.Label PagesLabel;
         private System.Windows.Forms.TextBox PagesInput;
         private System.Windows.Forms.Label VolumeJLabel;
@@ -387,6 +371,8 @@ namespace OCRLayerCheck
         private System.Windows.Forms.Label ToPathLabel;
         private System.Windows.Forms.Label FromPathLabel;
         private System.Windows.Forms.Label InfoLabel;
+        private System.Windows.Forms.WebBrowser webBrowser1;
+        private System.Windows.Forms.WebBrowser webBrowser2;
     }
 }
 
