@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace OCRLayerCheck
@@ -18,7 +15,7 @@ namespace OCRLayerCheck
         private ExcelHandler excelHandler;
 
         private Patterns patterns = new Patterns();
-        private Article article = new Article();
+        private Article article;
         private FileUtil fileUtil = new FileUtil();
         private ArticleParser articleParser;
 
@@ -46,13 +43,12 @@ namespace OCRLayerCheck
 
             InitializeComponent();
 
-            InputPath.Text = @"c:\Users\sur-p\Downloads\на переименование\";
-            OutputPath.Text = @"c:\Users\sur-p\Downloads\переим\";
-
             webBrowser2.Hide();
 
             infoListIndex = 0;
             FullScreen();
+            InputPath.Text = @"c:\Users\sur-p\Downloads\на переименование\";
+            OutputPath.Text = @"c:\Users\sur-p\Downloads\переим\";
         }
 
         private void FullScreen()
@@ -75,12 +71,10 @@ namespace OCRLayerCheck
 
         private void PathWithOCR_TextChanged(object sender, EventArgs e)
         {
-            CreateNameForFile();
         }
 
         private void textBox4_TextChanged(object sender, EventArgs e)
         {
-            CreateNameForFile();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -108,38 +102,39 @@ namespace OCRLayerCheck
 
         private void OutputPath_TextChanged(object sender, EventArgs e)
         {
-            ShowPDF();
         }
 
         private void ShowPDF()
         {
-            if (Regex.IsMatch(InputPath.Text, patterns.DirectoryPath) &&
-                                Regex.IsMatch(OutputPath.Text, patterns.DirectoryPath))
+            if (patterns.MatchDirectoryPath(InputPath.Text).Success)
             {
                 filesInfoList = fileHandler.GetFileNames(InputPath.Text);
 
-                log.WriteLine($"{filesInfoList[infoListIndex].Name}:");
-                article = pdfHandler.ParsePage(filesInfoList[infoListIndex]);
+                var stackTraceFrame = new StackTrace().GetFrame(0);
+                log.WriteLine($"{stackTraceFrame.GetMethod()} Old fileName: {filesInfoList[infoListIndex].Name}:");
+                article = pdfHandler.GetPdfPageText(filesInfoList[infoListIndex], new Article());
                 article = articleParser.ParsePdfText(article);
+                log.WriteLine(article.ToString());
                 FillInputs(article);
 
                 if (firstBrowserDown)
                 {
-                    Task.Factory.StartNew(() => HideNavigate(webBrowser1), cancellationToken);
+                    HideNavigate(webBrowser1);
                     webBrowser2.Show();
                     webBrowser2.Navigate(filesInfoList[infoListIndex].FullName);
                     firstBrowserDown = false;
                 }
                 else
                 {
-                    Task.Factory.StartNew(() => HideNavigate(webBrowser2), cancellationToken);
+                    HideNavigate(webBrowser2);
                     webBrowser1.Show();
                     webBrowser1.Navigate(filesInfoList[infoListIndex].FullName);
                     firstBrowserDown = true;
                 }
 
                 oldFileName.Text = filesInfoList[infoListIndex].Name;
-                log.WriteLine("File: " + filesInfoList[infoListIndex].FullName);
+
+                log.WriteLine(stackTraceFrame.GetMethod() + ":\n File: " + filesInfoList[infoListIndex].FullName);
                 InfoLabel.Text = string.Empty;
             }
             else
@@ -159,29 +154,19 @@ namespace OCRLayerCheck
             JNumberInput.Text = article.Journal.Number;
             JVolumeInput.Text = article.Journal.Volume;
 
-            nameForFile = articleParser.GetFileName(article);
-            nameForFile = articleParser.CheckFileName(nameForFile);
-            if (!nameForFile.Contains(".pdf"))
-            {
-                InfoLabel.Text = nameForFile;
-            }
-            else
-            {
-                NewFileNameInput.Text = nameForFile;
-                log.WriteLine("Name for File:" + nameForFile);
-                log.WriteLine(article.ToString());
-            }
+            CreateNameForFile();
         }
 
         public void HideNavigate(WebBrowser webBrowser)
         {
             webBrowser.Hide();
+            string browserName = webBrowser.Name;
             int tabIndex = webBrowser.TabIndex;
             webBrowser.Dispose();
             webBrowser = new WebBrowser();
             webBrowser.Location = new System.Drawing.Point(466, 27);
             webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
-            webBrowser.Name = "webBrowser";
+            webBrowser.Name = browserName;
             webBrowser.Size = new System.Drawing.Size(773, 516);
             webBrowser.TabIndex = tabIndex;
             if (infoListIndex + 1 < filesInfoList.Count)
@@ -196,16 +181,20 @@ namespace OCRLayerCheck
 
         private void CreateNameForFile()
         {
-            article.Autor = AutorInput.Text;
-            article.Title = TitleInput.Text;
-            article.Town = TownInput.Text;
-            article.Year = YearInput.Text;
-            article.Pages = PagesInput.Text;
+            article.Title = string.IsNullOrEmpty(TitleInput.Text) ? article.Title : TitleInput.Text;
+            article.Town = string.IsNullOrEmpty(TownInput.Text) ? article.Town : TownInput.Text;
+            article.Year = string.IsNullOrEmpty(YearInput.Text) ? article.Year : YearInput.Text;
+            article.Pages = string.IsNullOrEmpty(PagesInput.Text) ? article.Pages : PagesInput.Text;
 
-            article.Journal.Title = JTitleInput.Text;
-            article.Journal.Number = JNumberInput.Text;
-            article.Journal.Volume = JVolumeInput.Text;
+            article.Journal.Title = string.IsNullOrEmpty(JTitleInput.Text) ? article.Journal.Title : JTitleInput.Text;
+            article.Journal.Number = string.IsNullOrEmpty(JNumberInput.Text) ? article.Journal.Number : JNumberInput.Text;
+            article.Journal.Volume = string.IsNullOrEmpty(JVolumeInput.Text) ? article.Journal.Volume : JVolumeInput.Text;
 
+            ManageNewFileName();
+        }
+
+        private void ManageNewFileName()
+        {
             nameForFile = articleParser.GetFileName(article);
             nameForFile = articleParser.CheckFileName(nameForFile);
             if (!nameForFile.Contains(".pdf"))
@@ -215,7 +204,8 @@ namespace OCRLayerCheck
             else
             {
                 NewFileNameInput.Text = nameForFile;
-                log.WriteLine("Name for File:" + nameForFile);
+                var stackTraceFrame = new StackTrace().GetFrame(0);
+                log.WriteLine(stackTraceFrame.GetMethod() + "\nName for File:" + nameForFile);
                 log.WriteLine(article.ToString());
             }
         }

@@ -2,9 +2,10 @@
 
 namespace OCRLayerCheck
 {
-    internal class Patterns
+    public class Patterns
     {
         public string NumberPattern = @"\d+";
+        public string cleanUpPattern = @"^(\.|\,|\:|\;)|\,\s|(\.|\,|\:|\;)\s*$";
 
         public string AutorPattern = @"-([А-я]|\w|((?!__))+|\s)*-" +
             @"([А-я]|\w|((?!__))+|\s)+\,\s" +
@@ -20,30 +21,23 @@ namespace OCRLayerCheck
 
         public string BookEditionPattern = @"\.\s([А-я]|\w|((?!__))+)+\s\:\s([\D]|((?!__))+)+\,\s\d{4}";
 
-        public string DirectoryPath = @"[a-zA-Z]:\\((?:.*?\\)*)";
-
         public string EscapedSymbols = @"(\||\\|\;|\:|\/|\?|\*|\>|\<)";
 
         private string fileNameExample = "Иванов П._Название статьи_М_19--_12с=Название журнала_номер 193_Т.1";
 
         internal Match MatchBookEdition(string str)
         {
-            return Regex.Match(str, @"\.\s([А-я]|\w|((?!__))+)+\s\:\s([\D]|((?!__))+)+\,\s\d{4}");
+            return Regex.Match(str, @"\s?([А-я]|\w|((?!__))+)+\s?\:\s?([\D]|((?!__))+)+\,\s?\d{4}");
         }
 
         internal Match MatchBookAutor(string str)
         {
-            return Regex.Match(str, @"^([А-я]|\w|((?!__))+|\s)*-([А-я]|\w|((?!__))+|\s)+\,\s(([А-я]|\w|((?!__))+|-|\(|\))+\s?){1,3}");
+            return Regex.Match(str, @"[\u00C0-\u017Fa-zA-Z']+([- ][\u00C0-\u017Fa-zA-Z']+)*,\s[\u00C0-\u017Fa-zA-Z']+([- ][\u00C0-\u017Fa-zA-Z']+)*(\s\(dir.\))?");
         }
 
         internal Match MatchBookTown(string str)
         {
             return Regex.Match(str, @"\.\s([А-я]|\w|((?!__))+)+\s\:");
-        }
-
-        internal Match MatchYear(string str)
-        {
-            return Regex.Match(str, @"\d+");
         }
 
         internal Match MatchDirectoryPath(string str)
@@ -59,6 +53,31 @@ namespace OCRLayerCheck
         internal Match MatchJVolumeYear(string str)
         {
             return Regex.Match(str, @"\s\d\s\|\s\d{4}");
+        }
+
+        internal Match MatchYear(string str)
+        {
+            return Regex.Match(str, @"\d{4}");
+        }
+
+        internal Match MatchWord(string str)
+        {
+            return Regex.Match(str, @"(\s|^)([\D]|((?!__))+)+(\s|$)");
+        }
+
+        internal Match MatchArticleTitle(string str)
+        {
+            return Regex.Match(str, @"\«(\s|^)([\D]|((?!__))+)+(\s|$)\»");
+        }
+
+        internal Match FrenchLastNames(string str)
+        {
+            return Regex.Match(str, @"[\u00C0-\u017Fa-zA-Z']+([- ][\u00C0-\u017Fa-zA-Z']+)*");
+        }
+
+        internal Match SymbolsToEraise(string str)
+        {
+            return Regex.Match(str, @"^\s*(\.|\,|\:|\;)|(\.|\,|\:|\;)\s*$");
         }
     }
 }

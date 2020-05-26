@@ -5,12 +5,12 @@ using System.Text;
 
 namespace OCRLayerCheck
 {
-    internal class Log
+    public class Log
     {
         private string _logFile;
         private static readonly object sync = new object();
 
-        internal void CreateLogFile()
+        public void CreateLogFile()
         {
             string fileName = "OCRLayerCheck_" + DateTime.Now.ToString().Replace(":", "-") + ".log";
             string appPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -30,6 +30,7 @@ namespace OCRLayerCheck
                 {
                     lock (sync)
                     {
+                        File.AppendAllText(_logFile, "\n___" + DateTime.Now.ToString("h:mm:ss tt") + "____\n");
                         File.AppendAllText(_logFile, log + "\n", Encoding.GetEncoding("Windows-1251"));
                     }
                 }

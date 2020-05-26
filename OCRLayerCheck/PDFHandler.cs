@@ -1,7 +1,6 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
-using System;
 using System.IO;
 
 namespace OCRLayerCheck
@@ -21,10 +20,10 @@ namespace OCRLayerCheck
             this.patterns = patterns;
         }
 
-        internal Article ParsePage(FileInfo file)
+        internal Article GetPdfPageText(FileInfo file, Article article)
         {
             patterns = new Patterns();
-            article = new Article();
+
             PdfReader pdfReader = GetPdfReader(file);
             if (pdfReader != null)
             {

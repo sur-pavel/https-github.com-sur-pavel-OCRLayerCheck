@@ -1,11 +1,10 @@
-﻿using AM.Text;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
 namespace OCRLayerCheck
 {
-    internal class Article
+    public class Article
     {
         public string Autor { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
@@ -32,7 +31,7 @@ namespace OCRLayerCheck
                 var value = info.GetValue(this, null) ?? "(null)";
                 builder.AppendLine(info.Name + ": " + value.ToString());
             }
-
+            builder.AppendLine("Journal Data: \n" + Journal.ToString());
             return builder.ToString();
         }
 
@@ -46,12 +45,20 @@ namespace OCRLayerCheck
 
         public override bool Equals(object obj)
         {
-            return base.Equals(obj);
+            return obj is Article article &&
+                   Autor == article.Autor &&
+                   Title == article.Title &&
+                   Town == article.Town &&
+                   Year == article.Year &&
+                   Pages == article.Pages &&
+                   EqualityComparer<Journal>.Default.Equals(Journal, article.Journal) &&
+                   FileName == article.FileName &&
+                   EqualityComparer<StringBuilder>.Default.Equals(PdfText, article.PdfText);
         }
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            throw new System.NotImplementedException();
         }
     }
 }

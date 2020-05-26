@@ -1,10 +1,10 @@
 ﻿using System;
-using System.IO;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace OCRLayerCheck
 {
-    internal class ArticleParser
+    public class ArticleParser
     {
         private Patterns patterns = new Patterns();
         private Log log;
@@ -26,7 +26,7 @@ namespace OCRLayerCheck
             else
             {
                 return $"{article.Autor}_{article.Title}_{article.Town}_" +
-                    $"{article.Year}_{article.Pages}={article.Journal.Title}_{article.Journal.Number}" +
+                    $"{article.Year}_{article.Pages}={article.Journal.Title}_{article.Journal.Number}_" +
                     $"{article.Journal.Volume}_.pdf";
             }
         }
@@ -42,7 +42,7 @@ namespace OCRLayerCheck
             return fileName;
         }
 
-        internal Article ParsePdfText(Article article)
+        public Article ParsePdfText(Article article)
         {
             string pdfText = article.PdfText.ToString();
             string[] referenceStrings = { "Electronic reference" ,
@@ -58,18 +58,24 @@ namespace OCRLayerCheck
             {
                 if (pdfText.Contains(refStr))
                 {
-                    FillArticle(article, pdfText, refStr);
+                    article = FillArticle(article, pdfText, refStr);
                 }
             }
 
             return article;
         }
 
-        private void FillArticle(Article article, string pdfText, string referenceString)
+        private Article FillArticle(Article article, string pdfText, string referenceString)
         {
-            string data = pdfText.Split(new string[] { referenceString }, StringSplitOptions.None)[1];
+            string data = pdfText;
+
+            if (!string.IsNullOrEmpty(referenceString))
+            {
+                data = pdfText.Split(new string[] { referenceString }, StringSplitOptions.None)[1];
+            }
             data = data.Replace("\n", " ").Replace("  ", " ").Trim();
-            log.WriteLine("\n\n------------------------" + data + "------------------------\n\n");
+            //var stackTraceFrame = new StackTrace().GetFrame(0);
+            //log.WriteLine($"\n{stackTraceFrame.GetMethod()}\n------------------------" + data + "------------------------\n\n");
 
             if (patterns.MatchBookEdition(data).Success)
             {
@@ -79,21 +85,46 @@ namespace OCRLayerCheck
                 {
                     data = data.Replace(article.Autor, "");
                 }
-
+                article.Autor = CleanUpString(article.Autor);
                 article.Town = Regex.Match(patterns.MatchBookEdition(data).Value, patterns.TownPattern).Value.
                     Replace(":", "").Trim();
                 article.Year = Regex.Match(patterns.MatchBookEdition(data).Value, patterns.YearPattern).Value.Trim();
             }
             else
             {
-                article.Autor = data.Split(',')[0];
-                data = data.Replace(article.Autor, "");
-                string jVolumeNumber = patterns.MatchJVolumeYear(data).Value;
-                article.Journal.Number = patterns.MatchYear(jVolumeNumber).Value;
-                article.Year = Regex.Match(data, patterns.YearPattern).Value.Trim();
+                article = ParseJournalArticle(article, data);
             }
 
-            log.WriteLine(article.ToString());
+            return article;
+        }
+
+        private Article ParseJournalArticle(Article article, string data)
+        {
+            article.Autor = data.Split(',')[0];
+            data = data.Replace(article.Autor, "");
+            if (patterns.MatchArticleTitle(data).Success)
+            {
+                article.Title = patterns.MatchArticleTitle(data).Value;
+                data = data.Replace(article.Title, "");
+                article.Title = article.Title.Substring(1, article.Title.Length - 2).Trim();
+            }
+            if (patterns.MatchJVolumeYear(data).Success)
+            {
+                string jVolumeNumber = patterns.MatchJVolumeYear(data).Value;
+                article.Year = patterns.MatchYear(jVolumeNumber).Value.Trim();
+                article.Journal.Number = article.Year;
+                article.Journal.Volume = jVolumeNumber.Split('|')[0].Trim();
+            }
+            if (data.Contains("Bulletin de correspondance hellenique moderne et contemporain"))
+            {
+                article.Journal.Title = "BCHMC";
+            }
+            return article;
+        }
+
+        private string CleanUpString(string str)
+        {
+            return Regex.Replace(str, patterns.cleanUpPattern, "").Trim();
         }
     }
 }
