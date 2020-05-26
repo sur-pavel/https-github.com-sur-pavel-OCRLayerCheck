@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace OCRLayerCheck
@@ -114,19 +115,21 @@ namespace OCRLayerCheck
                 log.WriteLine($"{stackTraceFrame.GetMethod()} Old fileName: {filesInfoList[infoListIndex].Name}:");
                 article = pdfHandler.GetPdfPageText(filesInfoList[infoListIndex], new Article());
                 article = articleParser.ParsePdfText(article);
-                log.WriteLine(article.ToString());
+                log.WriteLine(stackTraceFrame.GetMethod() + article.ToString());
                 FillInputs(article);
+                CreateNameForFile();
+                ManageNewFileName();
 
                 if (firstBrowserDown)
                 {
-                    HideNavigate(webBrowser1);
+                    Task.Factory.StartNew(() => HideNavigate(webBrowser1));
                     webBrowser2.Show();
                     webBrowser2.Navigate(filesInfoList[infoListIndex].FullName);
                     firstBrowserDown = false;
                 }
                 else
                 {
-                    HideNavigate(webBrowser2);
+                    Task.Factory.StartNew(() => HideNavigate(webBrowser2));
                     webBrowser1.Show();
                     webBrowser1.Navigate(filesInfoList[infoListIndex].FullName);
                     firstBrowserDown = true;
@@ -134,7 +137,6 @@ namespace OCRLayerCheck
 
                 oldFileName.Text = filesInfoList[infoListIndex].Name;
 
-                log.WriteLine(stackTraceFrame.GetMethod() + ":\n File: " + filesInfoList[infoListIndex].FullName);
                 InfoLabel.Text = string.Empty;
             }
             else
@@ -153,8 +155,6 @@ namespace OCRLayerCheck
             JTitleInput.Text = article.Journal.Title;
             JNumberInput.Text = article.Journal.Number;
             JVolumeInput.Text = article.Journal.Volume;
-
-            CreateNameForFile();
         }
 
         public void HideNavigate(WebBrowser webBrowser)
@@ -181,16 +181,19 @@ namespace OCRLayerCheck
 
         private void CreateNameForFile()
         {
-            article.Title = string.IsNullOrEmpty(TitleInput.Text) ? article.Title : TitleInput.Text;
-            article.Town = string.IsNullOrEmpty(TownInput.Text) ? article.Town : TownInput.Text;
-            article.Year = string.IsNullOrEmpty(YearInput.Text) ? article.Year : YearInput.Text;
-            article.Pages = string.IsNullOrEmpty(PagesInput.Text) ? article.Pages : PagesInput.Text;
+            if (!nameForFile.Equals(NewFileNameInput.Text))
+            {
+                article.Title = string.IsNullOrEmpty(TitleInput.Text) ? article.Title : TitleInput.Text;
+                article.Town = string.IsNullOrEmpty(TownInput.Text) ? article.Town : TownInput.Text;
+                article.Year = string.IsNullOrEmpty(YearInput.Text) ? article.Year : YearInput.Text;
+                article.Pages = string.IsNullOrEmpty(PagesInput.Text) ? article.Pages : PagesInput.Text;
 
-            article.Journal.Title = string.IsNullOrEmpty(JTitleInput.Text) ? article.Journal.Title : JTitleInput.Text;
-            article.Journal.Number = string.IsNullOrEmpty(JNumberInput.Text) ? article.Journal.Number : JNumberInput.Text;
-            article.Journal.Volume = string.IsNullOrEmpty(JVolumeInput.Text) ? article.Journal.Volume : JVolumeInput.Text;
+                article.Journal.Title = string.IsNullOrEmpty(JTitleInput.Text) ? article.Journal.Title : JTitleInput.Text;
+                article.Journal.Number = string.IsNullOrEmpty(JNumberInput.Text) ? article.Journal.Number : JNumberInput.Text;
+                article.Journal.Volume = string.IsNullOrEmpty(JVolumeInput.Text) ? article.Journal.Volume : JVolumeInput.Text;
 
-            ManageNewFileName();
+                ManageNewFileName();
+            }
         }
 
         private void ManageNewFileName()
@@ -205,8 +208,8 @@ namespace OCRLayerCheck
             {
                 NewFileNameInput.Text = nameForFile;
                 var stackTraceFrame = new StackTrace().GetFrame(0);
-                log.WriteLine(stackTraceFrame.GetMethod() + "\nName for File:" + nameForFile);
-                log.WriteLine(article.ToString());
+                log.WriteLine(stackTraceFrame.GetMethod() + " New fileName:" + nameForFile);
+                log.WriteLine(stackTraceFrame.GetMethod() + article.ToString());
             }
         }
 

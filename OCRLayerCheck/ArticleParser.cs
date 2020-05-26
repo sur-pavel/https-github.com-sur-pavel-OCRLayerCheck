@@ -1,5 +1,9 @@
-﻿using System;
+﻿using iTextSharp.text;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace OCRLayerCheck
@@ -79,16 +83,7 @@ namespace OCRLayerCheck
 
             if (patterns.MatchBookEdition(data).Success)
             {
-                article.Autor = patterns.MatchBookAutor(data).Value.Trim();
-
-                if (!string.IsNullOrEmpty(article.Autor))
-                {
-                    data = data.Replace(article.Autor, "");
-                }
-                article.Autor = CleanUpString(article.Autor);
-                article.Town = Regex.Match(patterns.MatchBookEdition(data).Value, patterns.TownPattern).Value.
-                    Replace(":", "").Trim();
-                article.Year = Regex.Match(patterns.MatchBookEdition(data).Value, patterns.YearPattern).Value.Trim();
+                article = ParseBook(article, data);
             }
             else
             {
@@ -98,9 +93,38 @@ namespace OCRLayerCheck
             return article;
         }
 
+        private Article ParseBook(Article article, string data)
+        {
+            article.Autor = patterns.MatchBookAutor(data).Value.Trim();
+
+            if (!string.IsNullOrEmpty(article.Autor))
+            {
+                article.Autor = FirstCharToUpper(article.Autor);
+                data = data.Replace(article.Autor, "");
+                article.Autor = CleanUpString(article.Autor);
+            }
+            article.Title = patterns.MatchTitle(data).Value;
+            article.Title = OprimizeTitle(article.Title);
+            string bookEdition = patterns.MatchBookEdition(data).Value;
+            article.Town = patterns.MatchBookTown(bookEdition).Value.Replace(":", "").Trim();
+            article.Year = Regex.Match(patterns.MatchBookEdition(data).Value, patterns.YearPattern).Value.Trim();
+            return article;
+        }
+
+        private string OprimizeTitle(string str)
+        {
+            str = Regex.Replace(str, @"\s\.", ".");
+            str = Regex.Replace(str, @"\s\!", "!");
+            str = Regex.Replace(str, @"\s\?", "");
+            str = Regex.Replace(str, @"\:", "");
+            return str;
+        }
+
         private Article ParseJournalArticle(Article article, string data)
         {
             article.Autor = data.Split(',')[0];
+            article.Autor = CleanUpString(article.Autor);
+
             data = data.Replace(article.Autor, "");
             if (patterns.MatchArticleTitle(data).Success)
             {
@@ -125,6 +149,25 @@ namespace OCRLayerCheck
         private string CleanUpString(string str)
         {
             return Regex.Replace(str, patterns.cleanUpPattern, "").Trim();
+        }
+
+        public string FirstCharToUpper(string input)
+        {
+            input = input.ToLower();
+            if (input.Split(' ').Length > 1)
+            {
+                List<string> list = new List<string>();
+                foreach (string str in input.Split(' '))
+                {
+                    list.Add(str.First().ToString().ToUpper() + str.Substring(1));
+                }
+                input = String.Join(" ", list);
+            }
+            else
+            {
+                input = input.First().ToString().ToUpper() + input.Substring(1);
+            }
+            return input;
         }
     }
 }

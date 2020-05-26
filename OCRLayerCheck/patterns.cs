@@ -5,7 +5,7 @@ namespace OCRLayerCheck
     public class Patterns
     {
         public string NumberPattern = @"\d+";
-        public string cleanUpPattern = @"^(\.|\,|\:|\;)|\,\s|(\.|\,|\:|\;)\s*$";
+        public string cleanUpPattern = @"^\s*(\.|\,|\:|\;)|\,|(\,|\:|\;)\s*$";
 
         public string AutorPattern = @"-([А-я]|\w|((?!__))+|\s)*-" +
             @"([А-я]|\w|((?!__))+|\s)+\,\s" +
@@ -37,7 +37,7 @@ namespace OCRLayerCheck
 
         internal Match MatchBookTown(string str)
         {
-            return Regex.Match(str, @"\.\s([А-я]|\w|((?!__))+)+\s\:");
+            return Regex.Match(str, @"([А-я]|\w|((?!__))+)+\s?\:");
         }
 
         internal Match MatchDirectoryPath(string str)
@@ -53,6 +53,11 @@ namespace OCRLayerCheck
         internal Match MatchJVolumeYear(string str)
         {
             return Regex.Match(str, @"\s\d\s\|\s\d{4}");
+        }
+
+        internal Match MatchTitle(string str)
+        {
+            return Regex.Match(str, @"([\u00C0-\u017Fa-zA-Z'-]+\s)+[\u00C0-\u017Fa-zA-Z']+\s?(\.|\:|\?|\!)");
         }
 
         internal Match MatchYear(string str)

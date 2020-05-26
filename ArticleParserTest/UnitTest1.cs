@@ -67,7 +67,7 @@ namespace ArticleParserTest
             Article expectedArticle = new Article();
             expectedArticle.PdfText = stringBuilder;
             expectedArticle.Autor = "Bouveresse Jacques";
-            expectedArticle.Title = "Qu'est-ce qu'un systeme philosophique?";
+            expectedArticle.Title = "Qu'est-ce qu'un systeme philosophique";
             expectedArticle.Town = "Paris";
             expectedArticle.Year = "2012";
 
