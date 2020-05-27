@@ -30,7 +30,7 @@ namespace ArticleParserTest
                 "Bulletin de correspondance hellenique moderne et contemporain[Online], " +
                 "1 | 2019, Online since 01 December 2019, connection on 20 December 2019." +
                 "URL : http://journals.openedition.org/bchmc/285 " +
-                "Bulletin de correspondance hellenique moderne et contemporain hellenique moderne et contemporain");
+                "Bulletin de correspondance hellenique\n moderne et contemporain hellenique moderne et contemporain");
             actualArticle.PdfText = stringBuilder;
             actualArticle = articleParser.ParsePdfText(actualArticle);
             Article expectedArticle = new Article();

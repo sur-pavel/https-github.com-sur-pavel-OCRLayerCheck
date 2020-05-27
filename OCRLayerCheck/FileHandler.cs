@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -43,27 +44,42 @@ namespace OCRLayerCheck
             return moved;
         }
 
-        internal bool Delete(FileInfo currentFileInfo)
+        internal string CreateTempFile(FileInfo currentFileInfo)
         {
-            bool deleted = true;
+            string tempFileFullName = Path.GetTempPath() + currentFileInfo.Name;
 
             try
             {
-                File.Delete(currentFileInfo.FullName);
+                File.Copy(currentFileInfo.FullName, tempFileFullName);
+            }
+            catch (Exception ex)
+            {
+                log.WriteLine(ex.Message + "\n" + ex.StackTrace);
+            }
+            return tempFileFullName;
+        }
+
+        internal void Delete(string tempFileFullName)
+        {
+            try
+            {
+                FileUtil fileUtil = new FileUtil();
+                foreach (var proc in fileUtil.WhoIsLocking(tempFileFullName))
+                {
+                    proc.Kill();
+                }
+                File.Delete(tempFileFullName);
             }
             catch (NullReferenceException nullex)
             {
                 log.WriteLine(nullex.Message, nullex.StackTrace);
                 MessageBox.Show(nullex.Message, nullex.StackTrace);
-                deleted = false;
             }
             catch (Exception ex)
             {
                 log.WriteLine(ex.Message, ex.StackTrace);
                 MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
-                deleted = false;
             }
-            return deleted;
         }
     }
 }

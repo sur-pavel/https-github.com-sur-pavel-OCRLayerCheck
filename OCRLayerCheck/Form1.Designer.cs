@@ -30,6 +30,7 @@ namespace OCRLayerCheck
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.InputPath = new System.Windows.Forms.TextBox();
             this.TitleInput = new System.Windows.Forms.TextBox();
             this.AutorInput = new System.Windows.Forms.TextBox();
@@ -58,7 +59,6 @@ namespace OCRLayerCheck
             this.FromPathLabel = new System.Windows.Forms.Label();
             this.InfoLabel = new System.Windows.Forms.Label();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
-            this.webBrowser2 = new System.Windows.Forms.WebBrowser();
             this.SuspendLayout();
             // 
             // InputPath
@@ -294,20 +294,11 @@ namespace OCRLayerCheck
             this.webBrowser1.Size = new System.Drawing.Size(773, 516);
             this.webBrowser1.TabIndex = 39;
             // 
-            // webBrowser2
-            // 
-            this.webBrowser2.Location = new System.Drawing.Point(466, 27);
-            this.webBrowser2.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser2.Name = "webBrowser2";
-            this.webBrowser2.Size = new System.Drawing.Size(773, 516);
-            this.webBrowser2.TabIndex = 40;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1274, 605);
-            this.Controls.Add(this.webBrowser1);
             this.Controls.Add(this.InfoLabel);
             this.Controls.Add(this.FromPathLabel);
             this.Controls.Add(this.ToPathLabel);
@@ -334,7 +325,8 @@ namespace OCRLayerCheck
             this.Controls.Add(this.TitleInput);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.AutorInput);
-            this.Controls.Add(this.webBrowser2);
+            this.Controls.Add(this.webBrowser1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "OCRLayerCheck";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -372,7 +364,6 @@ namespace OCRLayerCheck
         private System.Windows.Forms.Label FromPathLabel;
         private System.Windows.Forms.Label InfoLabel;
         private System.Windows.Forms.WebBrowser webBrowser1;
-        private System.Windows.Forms.WebBrowser webBrowser2;
     }
 }
 
