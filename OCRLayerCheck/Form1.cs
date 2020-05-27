@@ -67,10 +67,12 @@ namespace OCRLayerCheck
 
         private void PathWithOCR_TextChanged(object sender, EventArgs e)
         {
+            ManageNewFileName();
         }
 
         private void textBox4_TextChanged(object sender, EventArgs e)
         {
+            ManageNewFileName();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -172,9 +174,6 @@ namespace OCRLayerCheck
             else
             {
                 NewFileNameInput.Text = nameForFile;
-                var stackTraceFrame = new StackTrace().GetFrame(0);
-                log.WriteLine(stackTraceFrame.GetMethod() + " New fileName:" + nameForFile);
-                log.WriteLine(stackTraceFrame.GetMethod() + article.ToString());
             }
         }
 
@@ -184,6 +183,9 @@ namespace OCRLayerCheck
 
             if (article.FileName.Contains(".pdf"))
             {
+                var stackTraceFrame = new StackTrace().GetFrame(0);
+                log.WriteLine(stackTraceFrame.GetMethod() + " New fileName:" + nameForFile);
+                log.WriteLine(stackTraceFrame.GetMethod() + article.ToString());
                 bool moved = fileHandler.Move(filesInfoList[infoListIndex], OutputPath.Text + article.FileName);
                 if (moved)
                 {
@@ -235,32 +237,32 @@ namespace OCRLayerCheck
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            CreateNameForFile();
+            ManageNewFileName();
         }
 
         private void AutorInput_TextChanged(object sender, EventArgs e)
         {
-            CreateNameForFile();
+            ManageNewFileName();
         }
 
         private void TownInput_TextChanged(object sender, EventArgs e)
         {
-            CreateNameForFile();
+            ManageNewFileName();
         }
 
         private void YearInput_TextChanged(object sender, EventArgs e)
         {
-            CreateNameForFile();
+            ManageNewFileName();
         }
 
         private void JTitleInput_TextChanged(object sender, EventArgs e)
         {
-            CreateNameForFile();
+            ManageNewFileName();
         }
 
         private void JVolumeInput_TextChanged(object sender, EventArgs e)
         {
-            CreateNameForFile();
+            ManageNewFileName();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)

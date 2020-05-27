@@ -31,19 +31,21 @@ namespace OCRLayerCheck
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.InputPath = new System.Windows.Forms.TextBox();
-            this.TitleInput = new System.Windows.Forms.TextBox();
             this.AutorInput = new System.Windows.Forms.TextBox();
+            this.TitleInput = new System.Windows.Forms.TextBox();
+            this.TownInput = new System.Windows.Forms.TextBox();
+            this.YearInput = new System.Windows.Forms.TextBox();
+            this.PagesInput = new System.Windows.Forms.TextBox();
+            this.JTitleInput = new System.Windows.Forms.TextBox();
+            this.JNumberInput = new System.Windows.Forms.TextBox();
+            this.JVolumeInput = new System.Windows.Forms.TextBox();
+            this.InputPath = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.JTitleInput = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.YearInput = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.TownInput = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.JNumberInput = new System.Windows.Forms.TextBox();
             this.ChooseInputPath = new System.Windows.Forms.Button();
             this.ChooseOutputPath = new System.Windows.Forms.Button();
             this.OutputPath = new System.Windows.Forms.TextBox();
@@ -51,9 +53,7 @@ namespace OCRLayerCheck
             this.oldFileName = new System.Windows.Forms.Label();
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
             this.PagesLabel = new System.Windows.Forms.Label();
-            this.PagesInput = new System.Windows.Forms.TextBox();
             this.VolumeJLabel = new System.Windows.Forms.Label();
-            this.JVolumeInput = new System.Windows.Forms.TextBox();
             this.NewFileNameInput = new System.Windows.Forms.TextBox();
             this.ToPathLabel = new System.Windows.Forms.Label();
             this.FromPathLabel = new System.Windows.Forms.Label();
@@ -66,7 +66,7 @@ namespace OCRLayerCheck
             this.InputPath.Location = new System.Drawing.Point(68, 396);
             this.InputPath.Name = "InputPath";
             this.InputPath.Size = new System.Drawing.Size(283, 20);
-            this.InputPath.TabIndex = 6;
+            this.InputPath.TabIndex = 9;
             this.InputPath.TextChanged += new System.EventHandler(this.InputPath_TextChanged);
             // 
             // TitleInput
@@ -74,7 +74,7 @@ namespace OCRLayerCheck
             this.TitleInput.Location = new System.Drawing.Point(132, 88);
             this.TitleInput.Name = "TitleInput";
             this.TitleInput.Size = new System.Drawing.Size(283, 20);
-            this.TitleInput.TabIndex = 4;
+            this.TitleInput.TabIndex = 2;
             this.TitleInput.TextChanged += new System.EventHandler(this.PathWithOCR_TextChanged);
             // 
             // AutorInput
@@ -82,7 +82,7 @@ namespace OCRLayerCheck
             this.AutorInput.Location = new System.Drawing.Point(132, 48);
             this.AutorInput.Name = "AutorInput";
             this.AutorInput.Size = new System.Drawing.Size(283, 20);
-            this.AutorInput.TabIndex = 3;
+            this.AutorInput.TabIndex = 1;
             this.AutorInput.TextChanged += new System.EventHandler(this.AutorInput_TextChanged);
             // 
             // label1
@@ -91,7 +91,7 @@ namespace OCRLayerCheck
             this.label1.Location = new System.Drawing.Point(28, 51);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(37, 13);
-            this.label1.TabIndex = 1;
+            this.label1.TabIndex = 10;
             this.label1.Text = "Автор";
             // 
             // label4
@@ -109,7 +109,7 @@ namespace OCRLayerCheck
             this.label5.Location = new System.Drawing.Point(12, 241);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(101, 13);
-            this.label5.TabIndex = 13;
+            this.label5.TabIndex = 12;
             this.label5.Text = "Заглавие журнала";
             // 
             // JTitleInput
@@ -117,7 +117,7 @@ namespace OCRLayerCheck
             this.JTitleInput.Location = new System.Drawing.Point(132, 238);
             this.JTitleInput.Name = "JTitleInput";
             this.JTitleInput.Size = new System.Drawing.Size(283, 20);
-            this.JTitleInput.TabIndex = 12;
+            this.JTitleInput.TabIndex = 6;
             this.JTitleInput.TextChanged += new System.EventHandler(this.JTitleInput_TextChanged);
             // 
             // label6
@@ -126,7 +126,7 @@ namespace OCRLayerCheck
             this.label6.Location = new System.Drawing.Point(28, 168);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(25, 13);
-            this.label6.TabIndex = 15;
+            this.label6.TabIndex = 13;
             this.label6.Text = "Год";
             // 
             // YearInput
@@ -134,7 +134,7 @@ namespace OCRLayerCheck
             this.YearInput.Location = new System.Drawing.Point(132, 168);
             this.YearInput.Name = "YearInput";
             this.YearInput.Size = new System.Drawing.Size(283, 20);
-            this.YearInput.TabIndex = 14;
+            this.YearInput.TabIndex = 4;
             this.YearInput.TextChanged += new System.EventHandler(this.YearInput_TextChanged);
             // 
             // label7
@@ -143,7 +143,7 @@ namespace OCRLayerCheck
             this.label7.Location = new System.Drawing.Point(28, 131);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(39, 13);
-            this.label7.TabIndex = 17;
+            this.label7.TabIndex = 14;
             this.label7.Text = "Место";
             // 
             // TownInput
@@ -151,7 +151,7 @@ namespace OCRLayerCheck
             this.TownInput.Location = new System.Drawing.Point(132, 128);
             this.TownInput.Name = "TownInput";
             this.TownInput.Size = new System.Drawing.Size(283, 20);
-            this.TownInput.TabIndex = 16;
+            this.TownInput.TabIndex = 3;
             this.TownInput.TextChanged += new System.EventHandler(this.TownInput_TextChanged);
             // 
             // label8
@@ -160,7 +160,7 @@ namespace OCRLayerCheck
             this.label8.Location = new System.Drawing.Point(12, 280);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(93, 13);
-            this.label8.TabIndex = 20;
+            this.label8.TabIndex = 15;
             this.label8.Text = "№ / Год журнала";
             // 
             // JNumberInput
@@ -168,7 +168,7 @@ namespace OCRLayerCheck
             this.JNumberInput.Location = new System.Drawing.Point(132, 277);
             this.JNumberInput.Name = "JNumberInput";
             this.JNumberInput.Size = new System.Drawing.Size(283, 20);
-            this.JNumberInput.TabIndex = 19;
+            this.JNumberInput.TabIndex = 7;
             this.JNumberInput.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
             // 
             // ChooseInputPath
@@ -176,7 +176,7 @@ namespace OCRLayerCheck
             this.ChooseInputPath.Location = new System.Drawing.Point(369, 396);
             this.ChooseInputPath.Name = "ChooseInputPath";
             this.ChooseInputPath.Size = new System.Drawing.Size(75, 23);
-            this.ChooseInputPath.TabIndex = 25;
+            this.ChooseInputPath.TabIndex = 16;
             this.ChooseInputPath.Text = "Открыть";
             this.ChooseInputPath.UseVisualStyleBackColor = true;
             this.ChooseInputPath.Click += new System.EventHandler(this.button2_Click);
@@ -186,7 +186,7 @@ namespace OCRLayerCheck
             this.ChooseOutputPath.Location = new System.Drawing.Point(369, 431);
             this.ChooseOutputPath.Name = "ChooseOutputPath";
             this.ChooseOutputPath.Size = new System.Drawing.Size(75, 23);
-            this.ChooseOutputPath.TabIndex = 27;
+            this.ChooseOutputPath.TabIndex = 18;
             this.ChooseOutputPath.Text = "Открыть";
             this.ChooseOutputPath.UseVisualStyleBackColor = true;
             this.ChooseOutputPath.Click += new System.EventHandler(this.ChooseOutputPath_Click);
@@ -196,7 +196,7 @@ namespace OCRLayerCheck
             this.OutputPath.Location = new System.Drawing.Point(68, 431);
             this.OutputPath.Name = "OutputPath";
             this.OutputPath.Size = new System.Drawing.Size(283, 20);
-            this.OutputPath.TabIndex = 26;
+            this.OutputPath.TabIndex = 17;
             this.OutputPath.TextChanged += new System.EventHandler(this.OutputPath_TextChanged);
             // 
             // NextFileButton
@@ -204,7 +204,7 @@ namespace OCRLayerCheck
             this.NextFileButton.Location = new System.Drawing.Point(148, 500);
             this.NextFileButton.Name = "NextFileButton";
             this.NextFileButton.Size = new System.Drawing.Size(136, 23);
-            this.NextFileButton.TabIndex = 28;
+            this.NextFileButton.TabIndex = 19;
             this.NextFileButton.Text = "След. файл";
             this.NextFileButton.UseVisualStyleBackColor = true;
             this.NextFileButton.Click += new System.EventHandler(this.NextFileButton_Click_1);
@@ -215,7 +215,7 @@ namespace OCRLayerCheck
             this.oldFileName.Location = new System.Drawing.Point(160, 467);
             this.oldFileName.Name = "oldFileName";
             this.oldFileName.Size = new System.Drawing.Size(101, 13);
-            this.oldFileName.TabIndex = 29;
+            this.oldFileName.TabIndex = 20;
             this.oldFileName.Text = "Старое имя файла";
             // 
             // PagesLabel
@@ -224,7 +224,7 @@ namespace OCRLayerCheck
             this.PagesLabel.Location = new System.Drawing.Point(28, 205);
             this.PagesLabel.Name = "PagesLabel";
             this.PagesLabel.Size = new System.Drawing.Size(57, 13);
-            this.PagesLabel.TabIndex = 32;
+            this.PagesLabel.TabIndex = 21;
             this.PagesLabel.Text = "Страницы";
             this.PagesLabel.Click += new System.EventHandler(this.label2_Click);
             // 
@@ -233,7 +233,7 @@ namespace OCRLayerCheck
             this.PagesInput.Location = new System.Drawing.Point(132, 205);
             this.PagesInput.Name = "PagesInput";
             this.PagesInput.Size = new System.Drawing.Size(283, 20);
-            this.PagesInput.TabIndex = 31;
+            this.PagesInput.TabIndex = 5;
             this.PagesInput.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // VolumeJLabel
@@ -242,7 +242,7 @@ namespace OCRLayerCheck
             this.VolumeJLabel.Location = new System.Drawing.Point(12, 319);
             this.VolumeJLabel.Name = "VolumeJLabel";
             this.VolumeJLabel.Size = new System.Drawing.Size(108, 13);
-            this.VolumeJLabel.TabIndex = 34;
+            this.VolumeJLabel.TabIndex = 22;
             this.VolumeJLabel.Text = "Том журнала/книги";
             // 
             // JVolumeInput
@@ -250,7 +250,7 @@ namespace OCRLayerCheck
             this.JVolumeInput.Location = new System.Drawing.Point(132, 316);
             this.JVolumeInput.Name = "JVolumeInput";
             this.JVolumeInput.Size = new System.Drawing.Size(283, 20);
-            this.JVolumeInput.TabIndex = 33;
+            this.JVolumeInput.TabIndex = 8;
             this.JVolumeInput.TextChanged += new System.EventHandler(this.JVolumeInput_TextChanged);
             // 
             // NewFileNameInput
@@ -258,7 +258,7 @@ namespace OCRLayerCheck
             this.NewFileNameInput.Location = new System.Drawing.Point(31, 556);
             this.NewFileNameInput.Name = "NewFileNameInput";
             this.NewFileNameInput.Size = new System.Drawing.Size(548, 20);
-            this.NewFileNameInput.TabIndex = 35;
+            this.NewFileNameInput.TabIndex = 23;
             // 
             // ToPathLabel
             // 
@@ -266,7 +266,7 @@ namespace OCRLayerCheck
             this.ToPathLabel.Location = new System.Drawing.Point(28, 436);
             this.ToPathLabel.Name = "ToPathLabel";
             this.ToPathLabel.Size = new System.Drawing.Size(14, 13);
-            this.ToPathLabel.TabIndex = 36;
+            this.ToPathLabel.TabIndex = 24;
             this.ToPathLabel.Text = "В";
             // 
             // FromPathLabel
@@ -275,7 +275,7 @@ namespace OCRLayerCheck
             this.FromPathLabel.Location = new System.Drawing.Point(28, 401);
             this.FromPathLabel.Name = "FromPathLabel";
             this.FromPathLabel.Size = new System.Drawing.Size(21, 13);
-            this.FromPathLabel.TabIndex = 37;
+            this.FromPathLabel.TabIndex = 25;
             this.FromPathLabel.Text = "Из";
             // 
             // InfoLabel
@@ -284,7 +284,7 @@ namespace OCRLayerCheck
             this.InfoLabel.Location = new System.Drawing.Point(105, 530);
             this.InfoLabel.Name = "InfoLabel";
             this.InfoLabel.Size = new System.Drawing.Size(0, 13);
-            this.InfoLabel.TabIndex = 38;
+            this.InfoLabel.TabIndex = 26;
             // 
             // webBrowser1
             // 
@@ -292,7 +292,7 @@ namespace OCRLayerCheck
             this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser1.Name = "webBrowser1";
             this.webBrowser1.Size = new System.Drawing.Size(773, 516);
-            this.webBrowser1.TabIndex = 39;
+            this.webBrowser1.TabIndex = 27;
             // 
             // Form1
             // 
