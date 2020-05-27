@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace OCRLayerCheck
 {
@@ -138,12 +139,29 @@ namespace OCRLayerCheck
                 article.Year = patterns.MatchYear(jVolumeNumber).Value.Trim();
                 article.Journal.Number = article.Year;
                 article.Journal.Volume = jVolumeNumber.Split('|')[0].Trim();
+                //article.Journal.Title = GetJournalTitle(data, jVolumeNumber);
+                article.Journal.Title = "BCHmc";
             }
-            if (data.Contains("Bulletin de correspondance hellenique moderne et contemporain"))
-            {
-                article.Journal.Title = "BCHMC";
-            }
+
             return article;
+        }
+
+        private string GetJournalTitle(string data, string jVolumeNumber)
+        {
+            string jTitle = data.Split(new string[] { jVolumeNumber }, StringSplitOptions.None)[0];
+            jTitle = CleanUpString(jTitle);
+            jTitle = Regex.Replace(jTitle, @"\[.+\]", "");
+            return GetAbbreviation(jTitle.Trim());
+        }
+
+        private string GetAbbreviation(string jTitle)
+        {
+            return new string(jTitle.Split()
+          .Where(s => s.Length > 0 && char.IsLetter(s[0]) && char.IsUpper(s[0]) &&
+          !s.Equals("de") && !s.Equals("et"))
+          .Take(jTitle.Split().Length)
+          .Select(s => s[0])
+          .ToArray());
         }
 
         private string CleanUpString(string str)

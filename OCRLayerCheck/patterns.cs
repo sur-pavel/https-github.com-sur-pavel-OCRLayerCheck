@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 
 namespace OCRLayerCheck
 {
@@ -33,6 +34,16 @@ namespace OCRLayerCheck
         internal Match MatchBookAutor(string str)
         {
             return Regex.Match(str, @"[\u00C0-\u017Fa-zA-Z']+([- ][\u00C0-\u017Fa-zA-Z']+)*,\s[\u00C0-\u017Fa-zA-Z']+([- ][\u00C0-\u017Fa-zA-Z']+)*(\s\(dir.\))?");
+        }
+
+        internal Match MatchStringWithPage(string str)
+        {
+            return Regex.Match(str, @"^\d{1,4}\s\s?\w|^.+\s\s?\d{1,4}\n");
+        }
+
+        internal Match MatchPageNumber(string str)
+        {
+            return Regex.Match(str, @"\d{1,4}");
         }
 
         internal Match MatchBookTown(string str)
@@ -83,6 +94,11 @@ namespace OCRLayerCheck
         internal Match SymbolsToEraise(string str)
         {
             return Regex.Match(str, @"^\s*(\.|\,|\:|\;)|(\.|\,|\:|\;)\s*$");
+        }
+
+        internal Match MatchJournalTitle(string str)
+        {
+            return Regex.Match(str, @"\d{4}");
         }
     }
 }

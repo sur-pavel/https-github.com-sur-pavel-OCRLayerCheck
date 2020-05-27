@@ -67,7 +67,7 @@ namespace OCRLayerCheck
 
         private void PathWithOCR_TextChanged(object sender, EventArgs e)
         {
-            ManageNewFileName();
+            CreateNameForFile();
         }
 
         private void textBox4_TextChanged(object sender, EventArgs e)
@@ -140,6 +140,7 @@ namespace OCRLayerCheck
             TitleInput.Text = article.Title;
             TownInput.Text = article.Town;
             YearInput.Text = article.Year;
+            PagesInput.Text = article.Pages;
 
             JTitleInput.Text = article.Journal.Title;
             JNumberInput.Text = article.Journal.Number;
@@ -148,19 +149,16 @@ namespace OCRLayerCheck
 
         private void CreateNameForFile()
         {
-            if (!nameForFile.Equals(NewFileNameInput.Text))
-            {
-                article.Title = string.IsNullOrEmpty(TitleInput.Text) ? article.Title : TitleInput.Text;
-                article.Town = string.IsNullOrEmpty(TownInput.Text) ? article.Town : TownInput.Text;
-                article.Year = string.IsNullOrEmpty(YearInput.Text) ? article.Year : YearInput.Text;
-                article.Pages = string.IsNullOrEmpty(PagesInput.Text) ? article.Pages : PagesInput.Text;
+            article.Title = string.IsNullOrEmpty(TitleInput.Text) ? article.Title : TitleInput.Text;
+            article.Town = string.IsNullOrEmpty(TownInput.Text) ? article.Town : TownInput.Text;
+            article.Year = string.IsNullOrEmpty(YearInput.Text) ? article.Year : YearInput.Text;
+            article.Pages = string.IsNullOrEmpty(PagesInput.Text) ? article.Pages : PagesInput.Text;
 
-                article.Journal.Title = string.IsNullOrEmpty(JTitleInput.Text) ? article.Journal.Title : JTitleInput.Text;
-                article.Journal.Number = string.IsNullOrEmpty(JNumberInput.Text) ? article.Journal.Number : JNumberInput.Text;
-                article.Journal.Volume = string.IsNullOrEmpty(JVolumeInput.Text) ? article.Journal.Volume : JVolumeInput.Text;
+            article.Journal.Title = string.IsNullOrEmpty(JTitleInput.Text) ? article.Journal.Title : JTitleInput.Text;
+            article.Journal.Number = string.IsNullOrEmpty(JNumberInput.Text) ? article.Journal.Number : JNumberInput.Text;
+            article.Journal.Volume = string.IsNullOrEmpty(JVolumeInput.Text) ? article.Journal.Volume : JVolumeInput.Text;
 
-                ManageNewFileName();
-            }
+            ManageNewFileName();
         }
 
         private void ManageNewFileName()
@@ -237,32 +235,32 @@ namespace OCRLayerCheck
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            ManageNewFileName();
+            CreateNameForFile();
         }
 
         private void AutorInput_TextChanged(object sender, EventArgs e)
         {
-            ManageNewFileName();
+            CreateNameForFile();
         }
 
         private void TownInput_TextChanged(object sender, EventArgs e)
         {
-            ManageNewFileName();
+            CreateNameForFile();
         }
 
         private void YearInput_TextChanged(object sender, EventArgs e)
         {
-            ManageNewFileName();
+            CreateNameForFile();
         }
 
         private void JTitleInput_TextChanged(object sender, EventArgs e)
         {
-            ManageNewFileName();
+            CreateNameForFile();
         }
 
         private void JVolumeInput_TextChanged(object sender, EventArgs e)
         {
-            ManageNewFileName();
+            CreateNameForFile();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)

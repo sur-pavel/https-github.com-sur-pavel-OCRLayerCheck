@@ -27,12 +27,35 @@ namespace OCRLayerCheck
             PdfReader pdfReader = GetPdfReader(file);
             if (pdfReader != null)
             {
-                for (int pageNumber = 1; pageNumber <= 3; pageNumber++)
+                int pageNumber = 1;
+                for (; pageNumber <= 10; pageNumber++)
                 {
                     string pdfText = PdfTextExtractor.GetTextFromPage(pdfReader, pageNumber, new LocationTextExtractionStrategy());
-                    if (!string.IsNullOrEmpty(pdfText) && pdfText.Contains("openedition.org"))
+                    if (!string.IsNullOrEmpty(pdfText) && (pdfText.Contains("openedition.org") || pdfText.Contains("ISBN")))
                     {
                         article.PdfText.Append(pdfText);
+                        break;
+                    }
+                }
+                for (; pageNumber <= 10; pageNumber++)
+                {
+                    string pdfText = PdfTextExtractor.GetTextFromPage(pdfReader, pageNumber, new LocationTextExtractionStrategy());
+                    if (patterns.MatchStringWithPage(pdfText).Success)
+                    {
+                        string pages = patterns.MatchStringWithPage(pdfText).Value;
+                        article.Pages = pages.Substring(0, pages.Length - 2);
+                        break;
+                    }
+                }
+                pageNumber = pdfReader.NumberOfPages;
+                for (; pageNumber > pageNumber - 10; pageNumber--)
+                {
+                    string pdfText = PdfTextExtractor.GetTextFromPage(pdfReader, pageNumber, new LocationTextExtractionStrategy());
+                    if (patterns.MatchStringWithPage(pdfText).Success)
+                    {
+                        string pages = patterns.MatchStringWithPage(pdfText).Value;
+                        article.Pages += "-" + patterns.MatchPageNumber(pages).Value + " p.";
+                        break;
                     }
                 }
                 if (string.IsNullOrEmpty(article.PdfText.ToString()))
