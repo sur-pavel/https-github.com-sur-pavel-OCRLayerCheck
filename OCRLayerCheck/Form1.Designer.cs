@@ -59,23 +59,9 @@ namespace OCRLayerCheck
             this.FromPathLabel = new System.Windows.Forms.Label();
             this.InfoLabel = new System.Windows.Forms.Label();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.BackButton = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // InputPath
-            // 
-            this.InputPath.Location = new System.Drawing.Point(68, 396);
-            this.InputPath.Name = "InputPath";
-            this.InputPath.Size = new System.Drawing.Size(283, 20);
-            this.InputPath.TabIndex = 9;
-            this.InputPath.TextChanged += new System.EventHandler(this.InputPath_TextChanged);
-            // 
-            // TitleInput
-            // 
-            this.TitleInput.Location = new System.Drawing.Point(132, 88);
-            this.TitleInput.Name = "TitleInput";
-            this.TitleInput.Size = new System.Drawing.Size(283, 20);
-            this.TitleInput.TabIndex = 2;
-            this.TitleInput.TextChanged += new System.EventHandler(this.PathWithOCR_TextChanged);
             // 
             // AutorInput
             // 
@@ -84,6 +70,70 @@ namespace OCRLayerCheck
             this.AutorInput.Size = new System.Drawing.Size(283, 20);
             this.AutorInput.TabIndex = 1;
             this.AutorInput.TextChanged += new System.EventHandler(this.AutorInput_TextChanged);
+            // 
+            // TitleInput
+            // 
+            this.TitleInput.Location = new System.Drawing.Point(132, 88);
+            this.TitleInput.Name = "TitleInput";
+            this.TitleInput.Size = new System.Drawing.Size(283, 20);
+            this.TitleInput.TabIndex = 2;
+            this.TitleInput.TextChanged += new System.EventHandler(this.TitleInput_TextChanged);
+            // 
+            // TownInput
+            // 
+            this.TownInput.Location = new System.Drawing.Point(132, 128);
+            this.TownInput.Name = "TownInput";
+            this.TownInput.Size = new System.Drawing.Size(283, 20);
+            this.TownInput.TabIndex = 3;
+            this.TownInput.TextChanged += new System.EventHandler(this.TownInput_TextChanged);
+            // 
+            // YearInput
+            // 
+            this.YearInput.Location = new System.Drawing.Point(132, 168);
+            this.YearInput.Name = "YearInput";
+            this.YearInput.Size = new System.Drawing.Size(283, 20);
+            this.YearInput.TabIndex = 4;
+            this.YearInput.TextChanged += new System.EventHandler(this.YearInput_TextChanged);
+            // 
+            // PagesInput
+            // 
+            this.PagesInput.Location = new System.Drawing.Point(132, 205);
+            this.PagesInput.Name = "PagesInput";
+            this.PagesInput.Size = new System.Drawing.Size(283, 20);
+            this.PagesInput.TabIndex = 5;
+            this.PagesInput.TextChanged += new System.EventHandler(this.PagesInput_TextChanged);
+            // 
+            // JTitleInput
+            // 
+            this.JTitleInput.Location = new System.Drawing.Point(132, 238);
+            this.JTitleInput.Name = "JTitleInput";
+            this.JTitleInput.Size = new System.Drawing.Size(283, 20);
+            this.JTitleInput.TabIndex = 6;
+            this.JTitleInput.TextChanged += new System.EventHandler(this.JTitleInput_TextChanged);
+            // 
+            // JNumberInput
+            // 
+            this.JNumberInput.Location = new System.Drawing.Point(132, 277);
+            this.JNumberInput.Name = "JNumberInput";
+            this.JNumberInput.Size = new System.Drawing.Size(283, 20);
+            this.JNumberInput.TabIndex = 7;
+            this.JNumberInput.TextChanged += new System.EventHandler(this.JNumberInput_TextChanged);
+            // 
+            // JVolumeInput
+            // 
+            this.JVolumeInput.Location = new System.Drawing.Point(132, 316);
+            this.JVolumeInput.Name = "JVolumeInput";
+            this.JVolumeInput.Size = new System.Drawing.Size(283, 20);
+            this.JVolumeInput.TabIndex = 8;
+            this.JVolumeInput.TextChanged += new System.EventHandler(this.JVolumeInput_TextChanged);
+            // 
+            // InputPath
+            // 
+            this.InputPath.Location = new System.Drawing.Point(68, 396);
+            this.InputPath.Name = "InputPath";
+            this.InputPath.Size = new System.Drawing.Size(283, 20);
+            this.InputPath.TabIndex = 9;
+            this.InputPath.TextChanged += new System.EventHandler(this.InputPath_TextChanged);
             // 
             // label1
             // 
@@ -112,14 +162,6 @@ namespace OCRLayerCheck
             this.label5.TabIndex = 12;
             this.label5.Text = "Заглавие журнала";
             // 
-            // JTitleInput
-            // 
-            this.JTitleInput.Location = new System.Drawing.Point(132, 238);
-            this.JTitleInput.Name = "JTitleInput";
-            this.JTitleInput.Size = new System.Drawing.Size(283, 20);
-            this.JTitleInput.TabIndex = 6;
-            this.JTitleInput.TextChanged += new System.EventHandler(this.JTitleInput_TextChanged);
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -128,14 +170,6 @@ namespace OCRLayerCheck
             this.label6.Size = new System.Drawing.Size(25, 13);
             this.label6.TabIndex = 13;
             this.label6.Text = "Год";
-            // 
-            // YearInput
-            // 
-            this.YearInput.Location = new System.Drawing.Point(132, 168);
-            this.YearInput.Name = "YearInput";
-            this.YearInput.Size = new System.Drawing.Size(283, 20);
-            this.YearInput.TabIndex = 4;
-            this.YearInput.TextChanged += new System.EventHandler(this.YearInput_TextChanged);
             // 
             // label7
             // 
@@ -146,14 +180,6 @@ namespace OCRLayerCheck
             this.label7.TabIndex = 14;
             this.label7.Text = "Место";
             // 
-            // TownInput
-            // 
-            this.TownInput.Location = new System.Drawing.Point(132, 128);
-            this.TownInput.Name = "TownInput";
-            this.TownInput.Size = new System.Drawing.Size(283, 20);
-            this.TownInput.TabIndex = 3;
-            this.TownInput.TextChanged += new System.EventHandler(this.TownInput_TextChanged);
-            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -163,14 +189,6 @@ namespace OCRLayerCheck
             this.label8.TabIndex = 15;
             this.label8.Text = "№ / Год журнала";
             // 
-            // JNumberInput
-            // 
-            this.JNumberInput.Location = new System.Drawing.Point(132, 277);
-            this.JNumberInput.Name = "JNumberInput";
-            this.JNumberInput.Size = new System.Drawing.Size(283, 20);
-            this.JNumberInput.TabIndex = 7;
-            this.JNumberInput.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
-            // 
             // ChooseInputPath
             // 
             this.ChooseInputPath.Location = new System.Drawing.Point(369, 396);
@@ -179,7 +197,7 @@ namespace OCRLayerCheck
             this.ChooseInputPath.TabIndex = 16;
             this.ChooseInputPath.Text = "Открыть";
             this.ChooseInputPath.UseVisualStyleBackColor = true;
-            this.ChooseInputPath.Click += new System.EventHandler(this.button2_Click);
+            this.ChooseInputPath.Click += new System.EventHandler(this.ChooseInputPath_Click);
             // 
             // ChooseOutputPath
             // 
@@ -226,15 +244,6 @@ namespace OCRLayerCheck
             this.PagesLabel.Size = new System.Drawing.Size(57, 13);
             this.PagesLabel.TabIndex = 21;
             this.PagesLabel.Text = "Страницы";
-            this.PagesLabel.Click += new System.EventHandler(this.label2_Click);
-            // 
-            // PagesInput
-            // 
-            this.PagesInput.Location = new System.Drawing.Point(132, 205);
-            this.PagesInput.Name = "PagesInput";
-            this.PagesInput.Size = new System.Drawing.Size(283, 20);
-            this.PagesInput.TabIndex = 5;
-            this.PagesInput.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // VolumeJLabel
             // 
@@ -245,17 +254,9 @@ namespace OCRLayerCheck
             this.VolumeJLabel.TabIndex = 22;
             this.VolumeJLabel.Text = "Том журнала/книги";
             // 
-            // JVolumeInput
-            // 
-            this.JVolumeInput.Location = new System.Drawing.Point(132, 316);
-            this.JVolumeInput.Name = "JVolumeInput";
-            this.JVolumeInput.Size = new System.Drawing.Size(283, 20);
-            this.JVolumeInput.TabIndex = 8;
-            this.JVolumeInput.TextChanged += new System.EventHandler(this.JVolumeInput_TextChanged);
-            // 
             // NewFileNameInput
             // 
-            this.NewFileNameInput.Location = new System.Drawing.Point(31, 556);
+            this.NewFileNameInput.Location = new System.Drawing.Point(15, 564);
             this.NewFileNameInput.Name = "NewFileNameInput";
             this.NewFileNameInput.Size = new System.Drawing.Size(548, 20);
             this.NewFileNameInput.TabIndex = 23;
@@ -291,14 +292,35 @@ namespace OCRLayerCheck
             this.webBrowser1.Location = new System.Drawing.Point(466, 27);
             this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(773, 516);
+            this.webBrowser1.Size = new System.Drawing.Size(796, 516);
             this.webBrowser1.TabIndex = 27;
+            // 
+            // BackButton
+            // 
+            this.BackButton.Location = new System.Drawing.Point(832, 564);
+            this.BackButton.Name = "BackButton";
+            this.BackButton.Size = new System.Drawing.Size(75, 23);
+            this.BackButton.TabIndex = 28;
+            this.BackButton.Text = "Назад";
+            this.BackButton.UseVisualStyleBackColor = true;
+            this.BackButton.Click += new System.EventHandler(this.BackButton_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(933, 569);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(242, 13);
+            this.label2.TabIndex = 29;
+            this.label2.Text = "Нажмите, если открылась ссылка в браузере";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1274, 605);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.BackButton);
             this.Controls.Add(this.InfoLabel);
             this.Controls.Add(this.FromPathLabel);
             this.Controls.Add(this.ToPathLabel);
@@ -329,7 +351,7 @@ namespace OCRLayerCheck
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "OCRLayerCheck";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -364,6 +386,8 @@ namespace OCRLayerCheck
         private System.Windows.Forms.Label FromPathLabel;
         private System.Windows.Forms.Label InfoLabel;
         private System.Windows.Forms.WebBrowser webBrowser1;
+        private System.Windows.Forms.Button BackButton;
+        private System.Windows.Forms.Label label2;
     }
 }
 

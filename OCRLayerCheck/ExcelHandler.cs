@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -11,6 +12,7 @@ namespace OCRLayerCheck
         private Excel.Worksheet xlWorkSheet;
         private object misValue = Missing.Value;
         private int row = 2;
+        private string fileFullName = string.Empty;
         private Log log;
 
         public ExcelHandler(Log log)
@@ -21,21 +23,34 @@ namespace OCRLayerCheck
         internal void CreatExcelObject()
         {
             xlApp = new Excel.Application();
-            xlWorkBook = xlApp.Workbooks.Add(misValue);
             xlApp.DisplayAlerts = false;
-            xlWorkBook = xlApp.Workbooks.Add();
-            xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-            xlWorkSheet.Cells[1, 1] = "Автор";
-            xlWorkSheet.Cells[1, 2] = "Заглавие";
-            xlWorkSheet.Cells[1, 3] = "Место";
-            xlWorkSheet.Cells[1, 4] = "Год";
-            xlWorkSheet.Cells[1, 5] = "Год";
-            xlWorkSheet.Cells[1, 6] = "Страницы";
-            xlWorkSheet.Cells[1, 7] = "Номер журнала";
-            xlWorkSheet.Cells[1, 8] = "Том журнала";
-            xlWorkSheet.Cells[1, 9] = "Имя файла";
+            string appPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            fileFullName = appPath + @"\List_Of_Records.xlsx";
 
-            xlWorkSheet.get_Range("A1", "G1").Cells.HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
+            if (!File.Exists(fileFullName))
+            {
+                xlWorkBook = xlApp.Workbooks.Add(misValue);
+                xlWorkBook = xlApp.Workbooks.Add();
+                xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+                xlWorkSheet.Cells[1, 1] = "Автор";
+                xlWorkSheet.Cells[1, 2] = "Заглавие";
+                xlWorkSheet.Cells[1, 3] = "Место";
+                xlWorkSheet.Cells[1, 4] = "Год";
+                xlWorkSheet.Cells[1, 5] = "Год";
+                xlWorkSheet.Cells[1, 6] = "Страницы";
+                xlWorkSheet.Cells[1, 7] = "Номер журнала";
+                xlWorkSheet.Cells[1, 8] = "Том журнала";
+                xlWorkSheet.Cells[1, 9] = "Имя файла";
+
+                xlWorkSheet.get_Range("A1", "G1").Cells.HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
+            }
+            else
+            {
+                xlWorkBook = xlApp.Workbooks.Open(fileFullName, ReadOnly: false);
+                xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+                Excel.Range lastCell = xlWorkSheet.Cells.SpecialCells(Excel.XlCellType.xlCellTypeLastCell);
+                row = lastCell.Row + 1;
+            }
         }
 
         internal void AddRow(Article article)
@@ -56,8 +71,8 @@ namespace OCRLayerCheck
 
         internal void SaveFile()
         {
-            xlWorkBook.SaveAs("List_Of_Records", AccessMode: Excel.XlSaveAsAccessMode.xlExclusive,
-               ConflictResolution: Excel.XlSaveConflictResolution.xlLocalSessionChanges);
+            xlWorkBook.SaveAs(fileFullName, AccessMode: Excel.XlSaveAsAccessMode.xlExclusive,
+           ConflictResolution: Excel.XlSaveConflictResolution.xlLocalSessionChanges);
         }
 
         internal void Quit()

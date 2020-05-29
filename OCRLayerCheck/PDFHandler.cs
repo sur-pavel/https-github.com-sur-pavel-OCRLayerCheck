@@ -2,6 +2,7 @@
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using System.IO;
+using System.Windows.Forms;
 
 namespace OCRLayerCheck
 {
@@ -10,9 +11,11 @@ namespace OCRLayerCheck
         internal Log log;
         internal bool notPDF;
         private Patterns patterns;
-        private Article article;
         private string inputFile;
         private string outputFile;
+        private string firstPages;
+        private string lastPages;
+        private const int COVER_PAGE = 1;
 
         public PDFHandler(Log log, Patterns patterns)
         {
@@ -23,17 +26,21 @@ namespace OCRLayerCheck
         internal Article GetPdfPageText(FileInfo file, Article article)
         {
             patterns = new Patterns();
-
+            bool isBook = false;
             PdfReader pdfReader = GetPdfReader(file);
             if (pdfReader != null)
             {
-                int pageNumber = 1;
+                int pageNumber = 1 + COVER_PAGE;
                 for (; pageNumber <= 10; pageNumber++)
                 {
                     string pdfText = PdfTextExtractor.GetTextFromPage(pdfReader, pageNumber, new LocationTextExtractionStrategy());
                     if (!string.IsNullOrEmpty(pdfText) && (pdfText.Contains("openedition.org") || pdfText.Contains("ISBN")))
                     {
                         article.PdfText.Append(pdfText);
+                        if (pdfText.Contains("ISBN"))
+                        {
+                            isBook = true;
+                        }
                         break;
                     }
                 }
@@ -42,20 +49,32 @@ namespace OCRLayerCheck
                     string pdfText = PdfTextExtractor.GetTextFromPage(pdfReader, pageNumber, new LocationTextExtractionStrategy());
                     if (patterns.MatchStringWithPage(pdfText).Success)
                     {
-                        string pages = patterns.MatchStringWithPage(pdfText).Value;
-                        article.Pages = pages.Substring(0, pages.Length - 2);
+                        firstPages = patterns.MatchStringWithPage(pdfText).Value;
+                        article.Pages = firstPages.Substring(0, firstPages.Length - 2);
                         break;
                     }
                 }
-                pageNumber = pdfReader.NumberOfPages;
-                for (; pageNumber > pageNumber - 10; pageNumber--)
+                int lastPageNumber = pdfReader.NumberOfPages;
+                int pageNumberFor = lastPageNumber - 20;
+                for (; lastPageNumber > pageNumberFor; lastPageNumber--)
                 {
-                    string pdfText = PdfTextExtractor.GetTextFromPage(pdfReader, pageNumber, new LocationTextExtractionStrategy());
+                    string pdfText = PdfTextExtractor.GetTextFromPage(pdfReader, lastPageNumber, new LocationTextExtractionStrategy());
                     if (patterns.MatchStringWithPage(pdfText).Success)
                     {
-                        string pages = patterns.MatchStringWithPage(pdfText).Value;
-                        article.Pages += "-" + patterns.MatchPageNumber(pages).Value + " p.";
-                        break;
+                        lastPages = patterns.MatchStringWithPage(pdfText).Value;
+                        int pages = int.Parse(patterns.MatchPageNumber(lastPages).Value);
+                        if (pages > pageNumberFor)
+                        {
+                            if (isBook)
+                            {
+                                article.Pages = pages + " p";
+                            }
+                            else
+                            {
+                                article.Pages += "-" + pages + " p";
+                            }
+                            break;
+                        }
                     }
                 }
                 if (string.IsNullOrEmpty(article.PdfText.ToString()))

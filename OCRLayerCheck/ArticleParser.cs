@@ -22,7 +22,7 @@ namespace OCRLayerCheck
 
         internal string GetFileName(Article article)
         {
-            if (Regex.IsMatch(article.PdfText.ToString(), patterns.BookEditionPattern))
+            if (patterns.MatchBookEdition(article.PdfText.ToString()).Success)
             {
                 return $"{article.Autor}_{article.Title}_{article.Town}_" +
                     $"{article.Year}_{article.Pages}" +
@@ -38,8 +38,7 @@ namespace OCRLayerCheck
 
         internal string CheckFileName(string fileName)
         {
-            Match wrongSimbols = Regex.Match(fileName, patterns.EscapedSymbols);
-            if (wrongSimbols.Success)
+            if (patterns.MatchEscapedSymbols(fileName).Success)
             {
                 fileName = @"Имя файл содержит один символов  \ / ? : *  > < | ";
             }
@@ -100,25 +99,29 @@ namespace OCRLayerCheck
 
             if (!string.IsNullOrEmpty(article.Autor))
             {
-                article.Autor = FirstCharToUpper(article.Autor);
                 data = data.Replace(article.Autor, "");
+                article.Autor = FirstCharToUpper(article.Autor);
                 article.Autor = CleanUpString(article.Autor);
             }
             article.Title = patterns.MatchTitle(data).Value;
-            article.Title = OprimizeTitle(article.Title);
+            if (!string.IsNullOrEmpty(article.Title))
+            {
+                data = data.Replace(article.Title, "");
+                article.Title = OprimizeTitle(article.Title);
+            }
             string bookEdition = patterns.MatchBookEdition(data).Value;
             article.Town = patterns.MatchBookTown(bookEdition).Value.Replace(":", "").Trim();
-            article.Year = Regex.Match(patterns.MatchBookEdition(data).Value, patterns.YearPattern).Value.Trim();
+            article.Year = patterns.MatchYear(bookEdition).Value.Trim();
             return article;
         }
 
         private string OprimizeTitle(string str)
         {
-            str = Regex.Replace(str, @"\s\.", ".");
-            str = Regex.Replace(str, @"\s\!", "!");
-            str = Regex.Replace(str, @"\s\?", "");
-            str = Regex.Replace(str, @"\:", "");
-            return str;
+            str = Regex.Replace(str, @"\.$", "");
+            str = Regex.Replace(str, @"\s?\!$", "!");
+            str = Regex.Replace(str, @"\?$", "");
+            str = Regex.Replace(str, @"\:$", "");
+            return str.Trim();
         }
 
         private Article ParseJournalArticle(Article article, string data)
@@ -166,7 +169,10 @@ namespace OCRLayerCheck
 
         private string CleanUpString(string str)
         {
-            return Regex.Replace(str, patterns.cleanUpPattern, "").Trim();
+            str = Regex.Replace(str, patterns.cleanUpPattern, "");
+            str = Regex.Replace(str, @"\s\;\s", ", ");
+            str = Regex.Replace(str, @"\;$", "");
+            return str.Trim();
         }
 
         public string FirstCharToUpper(string input)
@@ -175,17 +181,28 @@ namespace OCRLayerCheck
             if (input.Split(' ').Length > 1)
             {
                 List<string> list = new List<string>();
+                List<string> substrs = new List<string>();
                 foreach (string str in input.Split(' '))
                 {
-                    list.Add(str.First().ToString().ToUpper() + str.Substring(1));
+                    if (str.Contains("-"))
+                    {
+                        foreach (string substr in str.Split('-'))
+                        {
+                            substrs.Add(substr[0].ToString().ToUpper() + substr.Substring(1));
+                        }
+                        list.Add(string.Join("-", substrs));
+                    }
+                    else
+                    {
+                        list.Add(str[0].ToString().ToUpper() + str.Substring(1));
+                    }
                 }
-                input = String.Join(" ", list);
+                return string.Join(" ", list);
             }
             else
             {
-                input = input.First().ToString().ToUpper() + input.Substring(1);
+                return input[0].ToString().ToUpper() + input.Substring(1);
             }
-            return input;
         }
     }
 }

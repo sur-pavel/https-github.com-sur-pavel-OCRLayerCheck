@@ -17,7 +17,7 @@ namespace OCRLayerCheck
         private ExcelHandler excelHandler;
 
         private Patterns patterns = new Patterns();
-        private Article article;
+        private Article currentArticle;
         private ArticleParser articleParser;
 
         private PDFHandler pdfHandler;
@@ -26,6 +26,7 @@ namespace OCRLayerCheck
         private string nameForFile = string.Empty;
         private string tempFileFullName = string.Empty;
         private int infoListIndex;
+        private bool fromShowMethod = true;
 
         public Form1()
         {
@@ -33,6 +34,8 @@ namespace OCRLayerCheck
             excelHandler = new ExcelHandler(log);
             articleParser = new ArticleParser(log, patterns);
             pdfHandler = new PDFHandler(log, patterns);
+            //FileUtil fileUtil = new FileUtil();
+            //fileUtil.KillProcesses("excel");
             filesToDelete = new HashSet<string>();
 
             fileHandler.log = log;
@@ -57,25 +60,7 @@ namespace OCRLayerCheck
             this.FormBorderStyle = FormBorderStyle.Sizable;
         }
 
-        private void Button1_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-        }
-
-        private void PathWithOCR_TextChanged(object sender, EventArgs e)
-        {
-            CreateNameForFile();
-        }
-
-        private void textBox4_TextChanged(object sender, EventArgs e)
-        {
-            ManageNewFileName();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
+        private void ChooseInputPath_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog FBD = new FolderBrowserDialog();
             if (FBD.ShowDialog() == DialogResult.OK)
@@ -117,14 +102,14 @@ namespace OCRLayerCheck
 
         private void ShowPDF()
         {
+            fromShowMethod = true;
             var stackTraceFrame = new StackTrace().GetFrame(0);
             log.WriteLine($"{stackTraceFrame.GetMethod()} Old fileName: {filesInfoList[infoListIndex].Name}:");
-            article = pdfHandler.GetPdfPageText(filesInfoList[infoListIndex], new Article());
-            article = articleParser.ParsePdfText(article);
-            log.WriteLine(stackTraceFrame.GetMethod() + article.ToString());
+            currentArticle = new Article();
+            currentArticle = pdfHandler.GetPdfPageText(filesInfoList[infoListIndex], currentArticle);
+            currentArticle = articleParser.ParsePdfText(currentArticle);
             ClearControls();
-            FillInputs(article);
-            CreateNameForFile();
+            FillInputs(currentArticle);
             ManageNewFileName();
 
             tempFileFullName = fileHandler.CreateTempFile(filesInfoList[infoListIndex]);
@@ -132,6 +117,7 @@ namespace OCRLayerCheck
 
             oldFileName.Text = filesInfoList[infoListIndex].Name;
             InfoLabel.Text = string.Empty;
+            fromShowMethod = false;
         }
 
         private void FillInputs(Article article)
@@ -149,21 +135,22 @@ namespace OCRLayerCheck
 
         private void CreateNameForFile()
         {
-            article.Title = string.IsNullOrEmpty(TitleInput.Text) ? article.Title : TitleInput.Text;
-            article.Town = string.IsNullOrEmpty(TownInput.Text) ? article.Town : TownInput.Text;
-            article.Year = string.IsNullOrEmpty(YearInput.Text) ? article.Year : YearInput.Text;
-            article.Pages = string.IsNullOrEmpty(PagesInput.Text) ? article.Pages : PagesInput.Text;
+            currentArticle.Autor = string.IsNullOrEmpty(AutorInput.Text) ? currentArticle.Autor : AutorInput.Text;
+            currentArticle.Title = string.IsNullOrEmpty(TitleInput.Text) ? currentArticle.Title : TitleInput.Text;
+            currentArticle.Town = string.IsNullOrEmpty(TownInput.Text) ? currentArticle.Town : TownInput.Text;
+            currentArticle.Year = string.IsNullOrEmpty(YearInput.Text) ? currentArticle.Year : YearInput.Text;
+            currentArticle.Pages = string.IsNullOrEmpty(PagesInput.Text) ? currentArticle.Pages : PagesInput.Text;
 
-            article.Journal.Title = string.IsNullOrEmpty(JTitleInput.Text) ? article.Journal.Title : JTitleInput.Text;
-            article.Journal.Number = string.IsNullOrEmpty(JNumberInput.Text) ? article.Journal.Number : JNumberInput.Text;
-            article.Journal.Volume = string.IsNullOrEmpty(JVolumeInput.Text) ? article.Journal.Volume : JVolumeInput.Text;
+            currentArticle.Journal.Title = string.IsNullOrEmpty(JTitleInput.Text) ? currentArticle.Journal.Title : JTitleInput.Text;
+            currentArticle.Journal.Number = string.IsNullOrEmpty(JNumberInput.Text) ? currentArticle.Journal.Number : JNumberInput.Text;
+            currentArticle.Journal.Volume = string.IsNullOrEmpty(JVolumeInput.Text) ? currentArticle.Journal.Volume : JVolumeInput.Text;
 
             ManageNewFileName();
         }
 
         private void ManageNewFileName()
         {
-            nameForFile = articleParser.GetFileName(article);
+            nameForFile = articleParser.GetFileName(currentArticle);
             nameForFile = articleParser.CheckFileName(nameForFile);
             if (!nameForFile.Contains(".pdf"))
             {
@@ -177,26 +164,30 @@ namespace OCRLayerCheck
 
         private void NextFileButton_Click_1(object sender, EventArgs e)
         {
-            article.FileName = NewFileNameInput.Text;
+            currentArticle.FileName = NewFileNameInput.Text;
 
-            if (article.FileName.Contains(".pdf"))
+            if (currentArticle.FileName.Contains(".pdf"))
             {
                 var stackTraceFrame = new StackTrace().GetFrame(0);
                 log.WriteLine(stackTraceFrame.GetMethod() + " New fileName:" + nameForFile);
-                log.WriteLine(stackTraceFrame.GetMethod() + article.ToString());
-                bool moved = fileHandler.Move(filesInfoList[infoListIndex], OutputPath.Text + article.FileName);
+                log.WriteLine(stackTraceFrame.GetMethod() + currentArticle.ToString());
+                bool moved = fileHandler.Move(filesInfoList[infoListIndex], OutputPath.Text + currentArticle.FileName);
                 if (moved)
                 {
                     infoListIndex++;
                     if (infoListIndex < filesInfoList.Count)
                     {
-                        ShowPDF();
                         if (!string.IsNullOrEmpty(tempFileFullName))
                         {
                             filesToDelete.Add(tempFileFullName);
                         }
-                        excelHandler.AddRow(article);
-                        excelHandler.SaveFile();
+                        Article articleForExcel = currentArticle;
+                        Task.Factory.StartNew(() =>
+                        {
+                            excelHandler.AddRow(articleForExcel);
+                            excelHandler.SaveFile();
+                        });
+                        ShowPDF();
                     }
                     else
                     {
@@ -225,42 +216,68 @@ namespace OCRLayerCheck
             InfoLabel.Text = string.Empty;
         }
 
-        private void pdfViewer1_Load(object sender, EventArgs e)
-        {
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            CreateNameForFile();
-        }
-
         private void AutorInput_TextChanged(object sender, EventArgs e)
         {
-            CreateNameForFile();
+            if (!fromShowMethod)
+            {
+                CreateNameForFile();
+            }
+        }
+
+        private void TitleInput_TextChanged(object sender, EventArgs e)
+        {
+            if (!fromShowMethod)
+            {
+                CreateNameForFile();
+            }
         }
 
         private void TownInput_TextChanged(object sender, EventArgs e)
         {
-            CreateNameForFile();
+            if (!fromShowMethod)
+            {
+                CreateNameForFile();
+            }
         }
 
         private void YearInput_TextChanged(object sender, EventArgs e)
         {
-            CreateNameForFile();
+            if (!fromShowMethod)
+            {
+                CreateNameForFile();
+            }
+        }
+
+        private void PagesInput_TextChanged(object sender, EventArgs e)
+        {
+            if (!fromShowMethod)
+            {
+                CreateNameForFile();
+            }
         }
 
         private void JTitleInput_TextChanged(object sender, EventArgs e)
         {
-            CreateNameForFile();
+            if (!fromShowMethod)
+            {
+                CreateNameForFile();
+            }
+        }
+
+        private void JNumberInput_TextChanged(object sender, EventArgs e)
+        {
+            if (!fromShowMethod)
+            {
+                CreateNameForFile();
+            }
         }
 
         private void JVolumeInput_TextChanged(object sender, EventArgs e)
         {
-            CreateNameForFile();
+            if (!fromShowMethod)
+            {
+                CreateNameForFile();
+            }
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -283,6 +300,11 @@ namespace OCRLayerCheck
                 excelHandler.Quit();
             });
             exitTask.Wait();
+        }
+
+        private void BackButton_Click(object sender, EventArgs e)
+        {
+            webBrowser1.GoBack();
         }
     }
 }

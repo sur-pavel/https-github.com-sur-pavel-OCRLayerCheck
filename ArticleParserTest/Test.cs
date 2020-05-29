@@ -6,7 +6,7 @@ using OCRLayerCheck;
 namespace ArticleParserTest
 {
     [TestClass]
-    public class UnitTest1
+    public class Test
     {
         [TestMethod]
         public void ArticleTest()
@@ -38,7 +38,7 @@ namespace ArticleParserTest
             expectedArticle.Autor = "Katerina Nikolaou";
             expectedArticle.Title = "The Byzantines between Civil and Sacramental Marriage";
             expectedArticle.Year = "2019";
-            expectedArticle.Journal.Title = "BCHMC";
+            expectedArticle.Journal.Title = "BCHmc";
             expectedArticle.Journal.Number = "2019";
             expectedArticle.Journal.Volume = "1";
             AssertAll(expectedArticle, actualArticle);
@@ -70,6 +70,38 @@ namespace ArticleParserTest
             expectedArticle.Title = "Qu'est-ce qu'un systeme philosophique";
             expectedArticle.Town = "Paris";
             expectedArticle.Year = "2012";
+
+            AssertAll(expectedArticle, actualArticle);
+        }
+
+        [TestMethod]
+        public void BookTest2()
+        {
+            Patterns patterns = new Patterns();
+            Log log = new Log();
+            ArticleParser articleParser = new ArticleParser(log, patterns);
+            Article actualArticle = new Article();
+            StringBuilder stringBuilder = new StringBuilder(
+                "http://books.openedition.org" +
+                "Edición impresa" +
+                "ISBN: 9788486839611" +
+                "Número de páginas: 537" +
+                "Referencia electrónica" +
+                "LAGARDÈRE, Vincent. Histoire et société en Occident musulman au Moyen Âge: Analyse du Mi'yār d'al-" +
+                "Wanšarīšī. Nueva edición [en línea]. Madrid: Casa de Velázquez, 1995 (generado el 03 juillet 2019)." +
+                "Disponible en Internet: <http://books.openedition.org/cvz/2378>. ISBN: 9788490961001." +
+                "Este documento fue generado automáticamente el 3 julio 2019. Está derivado de una digitalización" +
+                "por un reconocimiento óptico de caracteres." +
+                "© Casa de Velázquez, 1995" +
+                "Condiciones de uso: http://www.openedition.org/6540");
+            actualArticle.PdfText = stringBuilder;
+            actualArticle = articleParser.ParsePdfText(actualArticle);
+            Article expectedArticle = new Article();
+            expectedArticle.PdfText = stringBuilder;
+            expectedArticle.Autor = "Lagardère Vincent";
+            expectedArticle.Title = "Histoire et société en Occident musulman au Moyen Âge";
+            expectedArticle.Town = "Madrid";
+            expectedArticle.Year = "1995";
 
             AssertAll(expectedArticle, actualArticle);
         }

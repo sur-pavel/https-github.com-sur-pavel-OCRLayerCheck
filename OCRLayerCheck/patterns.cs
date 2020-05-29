@@ -6,7 +6,7 @@ namespace OCRLayerCheck
     public class Patterns
     {
         public string NumberPattern = @"\d+";
-        public string cleanUpPattern = @"^\s*(\.|\,|\:|\;)|\,|(\,|\:|\;)\s*$";
+        public string cleanUpPattern = @"^\s*(\.|\,|\:|\;)|\,|(\,|\:)\s*$";
 
         public string AutorPattern = @"-([А-я]|\w|((?!__))+|\s)*-" +
             @"([А-я]|\w|((?!__))+|\s)+\,\s" +
@@ -28,17 +28,17 @@ namespace OCRLayerCheck
 
         internal Match MatchBookEdition(string str)
         {
-            return Regex.Match(str, @"\s?([А-я]|\w|((?!__))+)+\s?\:\s?([\D]|((?!__))+)+\,\s?\d{4}");
+            return Regex.Match(str, @"([\u00C0-\u017Fa-zA-Z'’,\-]+){1,5}\:.+,\s?\d{4}");
         }
 
         internal Match MatchBookAutor(string str)
         {
-            return Regex.Match(str, @"[\u00C0-\u017Fa-zA-Z']+([- ][\u00C0-\u017Fa-zA-Z']+)*,\s[\u00C0-\u017Fa-zA-Z']+([- ][\u00C0-\u017Fa-zA-Z']+)*(\s\(dir.\))?");
+            return Regex.Match(str, @"([\u00C0-\u017Fa-zA-Z']+([- ][\u00C0-\u017Fa-zA-Z']+)*,\s[\u00C0-\u017Fa-zA-Z']+([- ][\u00C0-\u017Fa-zA-Z']+)*(\s\(dir.\))?(\s\;\s)?){1,2}");
         }
 
         internal Match MatchStringWithPage(string str)
         {
-            return Regex.Match(str, @"^\d{1,4}\s\s?\w|^.+\s\s?\d{1,4}\n");
+            return Regex.Match(str, @"^\d{1,4}\s.?\s?\w|^.+\s\s?\d{1,4}\n");
         }
 
         internal Match MatchPageNumber(string str)
@@ -68,7 +68,7 @@ namespace OCRLayerCheck
 
         internal Match MatchTitle(string str)
         {
-            return Regex.Match(str, @"([\u00C0-\u017Fa-zA-Z'-]+\s)+[\u00C0-\u017Fa-zA-Z']+\s?(\.|\:|\?|\!)");
+            return Regex.Match(str, @"([\u00C0-\u017Fa-zA-Z'’,\-]+\s|(\(?\d{1,4}\)?\-?){1,2})+[\u00C0-\u017Fa-zA-Z'’\-]*\s?(\.|\:|\?|\!)");
         }
 
         internal Match MatchYear(string str)
