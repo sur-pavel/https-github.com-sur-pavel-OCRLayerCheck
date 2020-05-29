@@ -28,12 +28,18 @@ namespace OCRLayerCheck
 
         internal Match MatchBookEdition(string str)
         {
-            return Regex.Match(str, @"([\u00C0-\u017Fa-zA-Z'’,\-]+){1,5}\:.+,\s?\d{4}");
+            str = Regex.Replace(str, @"\?", "");
+            return Regex.Match(str, @"([\u00C0-\u017Fa-zA-Z'’?-]+\s?){1,3}\s?\:\s?[\u00C0-\u017Fa-zA-Z'’,?-]{1}.+\d{4}");
         }
 
         internal Match MatchBookAutor(string str)
         {
             return Regex.Match(str, @"([\u00C0-\u017Fa-zA-Z']+([- ][\u00C0-\u017Fa-zA-Z']+)*,\s[\u00C0-\u017Fa-zA-Z']+([- ][\u00C0-\u017Fa-zA-Z']+)*(\s\(dir.\))?(\s\;\s)?){1,2}");
+        }
+
+        internal Match MatchTitlePage(string str)
+        {
+            return Regex.Match(str, @"([\u00C0-\u017Fa-zA-Z'’?-]+\s?\n{0,5})+.+([\u00C0-\u017Fa-zA-Z'’?-]+\s?)+\d{4}");
         }
 
         internal Match MatchStringWithPage(string str)
@@ -68,7 +74,7 @@ namespace OCRLayerCheck
 
         internal Match MatchTitle(string str)
         {
-            return Regex.Match(str, @"([\u00C0-\u017Fa-zA-Z'’,\-]+\s|(\(?\d{1,4}\)?\-?){1,2})+[\u00C0-\u017Fa-zA-Z'’\-]*\s?(\.|\:|\?|\!)");
+            return Regex.Match(str, @"([\u00C0-\u017Fa-zA-Z'’,\-]+\s|(\(?\d{1,4}\)?\-?){1,2})+[\u00C0-\u017Fa-zA-Z'’\-]*\s?(\.|\:|\?|\!)(\s?\(?\d{1,4}\)?\-?){0,2}");
         }
 
         internal Match MatchYear(string str)
@@ -91,6 +97,11 @@ namespace OCRLayerCheck
             return Regex.Match(str, @"[\u00C0-\u017Fa-zA-Z']+([- ][\u00C0-\u017Fa-zA-Z']+)*");
         }
 
+        internal Match MatchJournalVolume(string str)
+        {
+            return Regex.Match(str, @"-\d{1,4}");
+        }
+
         internal Match SymbolsToEraise(string str)
         {
             return Regex.Match(str, @"^\s*(\.|\,|\:|\;)|(\.|\,|\:|\;)\s*$");
@@ -99,6 +110,16 @@ namespace OCRLayerCheck
         internal Match MatchJournalTitle(string str)
         {
             return Regex.Match(str, @"\d{4}");
+        }
+
+        internal Match MatchWrongBook(string str)
+        {
+            return Regex.Match(str, @"Collection : ([\u00C0-\u017Fa-zA-Z'’?-]+\s?)+\n");
+        }
+
+        internal Match MatchOddJournalData(string str)
+        {
+            return Regex.Match(str, @"\d{1,5}\s?[\u00C0-\u017Fa-zA-Z'’-]+.+\d{4}\-\d");
         }
     }
 }

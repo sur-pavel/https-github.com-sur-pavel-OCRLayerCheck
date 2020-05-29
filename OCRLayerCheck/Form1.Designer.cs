@@ -61,6 +61,9 @@ namespace OCRLayerCheck
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.BackButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.DocType = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // AutorInput
@@ -219,7 +222,7 @@ namespace OCRLayerCheck
             // 
             // NextFileButton
             // 
-            this.NextFileButton.Location = new System.Drawing.Point(148, 500);
+            this.NextFileButton.Location = new System.Drawing.Point(169, 580);
             this.NextFileButton.Name = "NextFileButton";
             this.NextFileButton.Size = new System.Drawing.Size(136, 23);
             this.NextFileButton.TabIndex = 19;
@@ -230,7 +233,8 @@ namespace OCRLayerCheck
             // oldFileName
             // 
             this.oldFileName.AutoSize = true;
-            this.oldFileName.Location = new System.Drawing.Point(160, 467);
+            this.oldFileName.Location = new System.Drawing.Point(28, 464);
+            this.oldFileName.MaximumSize = new System.Drawing.Size(400, 0);
             this.oldFileName.Name = "oldFileName";
             this.oldFileName.Size = new System.Drawing.Size(101, 13);
             this.oldFileName.TabIndex = 20;
@@ -256,7 +260,7 @@ namespace OCRLayerCheck
             // 
             // NewFileNameInput
             // 
-            this.NewFileNameInput.Location = new System.Drawing.Point(15, 564);
+            this.NewFileNameInput.Location = new System.Drawing.Point(15, 620);
             this.NewFileNameInput.Name = "NewFileNameInput";
             this.NewFileNameInput.Size = new System.Drawing.Size(548, 20);
             this.NewFileNameInput.TabIndex = 23;
@@ -289,15 +293,15 @@ namespace OCRLayerCheck
             // 
             // webBrowser1
             // 
-            this.webBrowser1.Location = new System.Drawing.Point(466, 27);
+            this.webBrowser1.Location = new System.Drawing.Point(461, 27);
             this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(796, 516);
+            this.webBrowser1.Size = new System.Drawing.Size(845, 576);
             this.webBrowser1.TabIndex = 27;
             // 
             // BackButton
             // 
-            this.BackButton.Location = new System.Drawing.Point(832, 564);
+            this.BackButton.Location = new System.Drawing.Point(830, 617);
             this.BackButton.Name = "BackButton";
             this.BackButton.Size = new System.Drawing.Size(75, 23);
             this.BackButton.TabIndex = 28;
@@ -308,17 +312,51 @@ namespace OCRLayerCheck
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(933, 569);
+            this.label2.Location = new System.Drawing.Point(961, 620);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(242, 13);
             this.label2.TabIndex = 29;
             this.label2.Text = "Нажмите, если открылась ссылка в браузере";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(0, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(35, 13);
+            this.label3.TabIndex = 30;
+            this.label3.Text = "label3";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(28, 358);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(83, 13);
+            this.label9.TabIndex = 31;
+            this.label9.Text = "Тип документа";
+            // 
+            // DocType
+            // 
+            this.DocType.FormattingEnabled = true;
+            this.DocType.Items.AddRange(new object[] {
+            "Книга",
+            "Статья",
+            "Книга?"});
+            this.DocType.Location = new System.Drawing.Point(132, 355);
+            this.DocType.Name = "DocType";
+            this.DocType.Size = new System.Drawing.Size(121, 21);
+            this.DocType.TabIndex = 32;
+            this.DocType.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1274, 605);
+            this.ClientSize = new System.Drawing.Size(1318, 656);
+            this.Controls.Add(this.DocType);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.BackButton);
             this.Controls.Add(this.InfoLabel);
@@ -351,7 +389,6 @@ namespace OCRLayerCheck
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "OCRLayerCheck";
-            
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -388,6 +425,9 @@ namespace OCRLayerCheck
         private System.Windows.Forms.WebBrowser webBrowser1;
         private System.Windows.Forms.Button BackButton;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox DocType;
     }
 }
 

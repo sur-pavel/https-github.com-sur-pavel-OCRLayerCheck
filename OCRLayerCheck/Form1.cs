@@ -27,6 +27,7 @@ namespace OCRLayerCheck
         private string tempFileFullName = string.Empty;
         private int infoListIndex;
         private bool fromShowMethod = true;
+        private StackFrame stackTraceFrame;
 
         public Form1()
         {
@@ -34,8 +35,8 @@ namespace OCRLayerCheck
             excelHandler = new ExcelHandler(log);
             articleParser = new ArticleParser(log, patterns);
             pdfHandler = new PDFHandler(log, patterns);
-            //FileUtil fileUtil = new FileUtil();
-            //fileUtil.KillProcesses("excel");
+            FileUtil fileUtil = new FileUtil();
+            fileUtil.KillProcesses("excel");
             filesToDelete = new HashSet<string>();
 
             fileHandler.log = log;
@@ -103,7 +104,7 @@ namespace OCRLayerCheck
         private void ShowPDF()
         {
             fromShowMethod = true;
-            var stackTraceFrame = new StackTrace().GetFrame(0);
+            stackTraceFrame = new StackTrace().GetFrame(0);
             log.WriteLine($"{stackTraceFrame.GetMethod()} Old fileName: {filesInfoList[infoListIndex].Name}:");
             currentArticle = new Article();
             currentArticle = pdfHandler.GetPdfPageText(filesInfoList[infoListIndex], currentArticle);
@@ -131,6 +132,18 @@ namespace OCRLayerCheck
             JTitleInput.Text = article.Journal.Title;
             JNumberInput.Text = article.Journal.Number;
             JVolumeInput.Text = article.Journal.Volume;
+            if (article.DocumentType == Article.DocType.Book)
+            {
+                DocType.SelectedItem = "Книга";
+            }
+            else if (article.DocumentType == Article.DocType.WrongBook)
+            {
+                DocType.SelectedItem = "Книга?";
+            }
+            else if (article.DocumentType == Article.DocType.Article)
+            {
+                DocType.SelectedItem = "Статья";
+            }
         }
 
         private void CreateNameForFile()
@@ -160,6 +173,7 @@ namespace OCRLayerCheck
             {
                 NewFileNameInput.Text = nameForFile;
             }
+            log.WriteLine($"{stackTraceFrame.GetMethod()}: {currentArticle.ToString()}");
         }
 
         private void NextFileButton_Click_1(object sender, EventArgs e)
@@ -305,6 +319,26 @@ namespace OCRLayerCheck
         private void BackButton_Click(object sender, EventArgs e)
         {
             webBrowser1.GoBack();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!fromShowMethod)
+            {
+                if (DocType.Text.Contains("Книга"))
+                {
+                    currentArticle.DocumentType = Article.DocType.Book;
+                }
+                else if (DocType.Text.Contains("Книга?"))
+                {
+                    currentArticle.DocumentType = Article.DocType.WrongBook;
+                }
+                else
+                {
+                    currentArticle.DocumentType = Article.DocType.Article;
+                }
+                CreateNameForFile();
+            }
         }
     }
 }

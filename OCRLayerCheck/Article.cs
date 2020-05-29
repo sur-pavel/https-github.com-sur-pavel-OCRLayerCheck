@@ -13,11 +13,22 @@ namespace OCRLayerCheck
         public string Year { get; set; } = string.Empty;
         public string Pages { get; set; } = string.Empty;
 
+        public DocType DocumentType { get; set; }
         public Journal Journal = new Journal();
         public string FileName { get; set; } = string.Empty;
         public StringBuilder PdfText { get; set; } = new StringBuilder();
 
+        public StringBuilder OddPdfText { get; set; } = new StringBuilder();
+
         private PropertyInfo[] _PropertyInfos = null;
+
+        public enum DocType
+        {
+            Book = 1,
+            Article = 2,
+            Journal = 3,
+            WrongBook = 4
+        }
 
         public override string ToString()
         {

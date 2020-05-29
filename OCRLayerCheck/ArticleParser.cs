@@ -1,9 +1,6 @@
-﻿using iTextSharp.text;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -22,7 +19,7 @@ namespace OCRLayerCheck
 
         internal string GetFileName(Article article)
         {
-            if (patterns.MatchBookEdition(article.PdfText.ToString()).Success)
+            if (article.DocumentType == Article.DocType.Book)
             {
                 return $"{article.Autor}_{article.Title}_{article.Town}_" +
                     $"{article.Year}_{article.Pages}" +
@@ -32,7 +29,7 @@ namespace OCRLayerCheck
             {
                 return $"{article.Autor}_{article.Title}_{article.Town}_" +
                     $"{article.Year}_{article.Pages}={article.Journal.Title}_{article.Journal.Number}_" +
-                    $"{article.Journal.Volume}_.pdf";
+                    $"{article.Journal.Volume}.pdf";
             }
         }
 
@@ -81,7 +78,7 @@ namespace OCRLayerCheck
             //var stackTraceFrame = new StackTrace().GetFrame(0);
             //log.WriteLine($"\n{stackTraceFrame.GetMethod()}\n------------------------" + data + "------------------------\n\n");
 
-            if (patterns.MatchBookEdition(data).Success)
+            if (article.DocumentType == Article.DocType.Book || article.DocumentType == Article.DocType.WrongBook)
             {
                 article = ParseBook(article, data);
             }
@@ -95,6 +92,8 @@ namespace OCRLayerCheck
 
         private Article ParseBook(Article article, string data)
         {
+            article.Journal.Number = patterns.MatchYear(article.OddPdfText.ToString()).Value;
+            article.Journal.Volume = patterns.MatchJournalVolume(article.OddPdfText.ToString()).Value.Replace("-", "");
             article.Autor = patterns.MatchBookAutor(data).Value.Trim();
 
             if (!string.IsNullOrEmpty(article.Autor))
@@ -107,20 +106,22 @@ namespace OCRLayerCheck
             if (!string.IsNullOrEmpty(article.Title))
             {
                 data = data.Replace(article.Title, "");
-                article.Title = OprimizeTitle(article.Title);
+                article.Title = OptimizeTitle(article.Title);
             }
             string bookEdition = patterns.MatchBookEdition(data).Value;
             article.Town = patterns.MatchBookTown(bookEdition).Value.Replace(":", "").Trim();
             article.Year = patterns.MatchYear(bookEdition).Value.Trim();
+
             return article;
         }
 
-        private string OprimizeTitle(string str)
+        private string OptimizeTitle(string str)
         {
             str = Regex.Replace(str, @"\.$", "");
             str = Regex.Replace(str, @"\s?\!$", "!");
             str = Regex.Replace(str, @"\?$", "");
             str = Regex.Replace(str, @"\:$", "");
+            str = Regex.Replace(str, @"\s?\:", ".");
             return str.Trim();
         }
 

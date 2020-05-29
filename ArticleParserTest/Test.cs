@@ -1,7 +1,6 @@
-﻿using System;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OCRLayerCheck;
+using System.Text;
 
 namespace ArticleParserTest
 {
@@ -41,6 +40,51 @@ namespace ArticleParserTest
             expectedArticle.Journal.Title = "BCHmc";
             expectedArticle.Journal.Number = "2019";
             expectedArticle.Journal.Volume = "1";
+            expectedArticle.IsBook = false;
+            AssertAll(expectedArticle, actualArticle);
+        }
+
+        [TestMethod]
+        public void ArticleTest2()
+        {
+            Patterns patterns = new Patterns();
+            Log log = new Log();
+            log.CreateLogFile();
+
+            ArticleParser articleParser = new ArticleParser(log, patterns);
+            Article actualArticle = new Article();
+            StringBuilder stringBuilder = new StringBuilder(
+                "Inquisition et societe au Mexique " +
+                "1571 - 1700 " +
+                "Solange Alberro " +
+                "DOI: 10.4000 / books.cemca.2601 " +
+                "Editeur: Centro de estudios mexicanos y centroamericanos " +
+                "Annee d'edition : 1988 " +
+                "Date de mise en ligne: 2 juin 2014 " +
+                "Collection: Hors collection " +
+                "ISBN electronique: 9782821846234 " +
+                "http://books.openedition.org " +
+                "Edition imprimee " +
+                "ISBN: 9789686029017 " +
+                "Nombre de pages: 489 " +
+                "Reference electronique " +
+                "ALBERRO, Solange.Inquisition et societe au Mexique: 1571 - 1700.Nouvelle edition[en ligne].Mexico : " +                "Centro de estudios mexicanos y centroamericanos, 1988(genere le 25 avril 2019).Disponible sur" +
+                "Internet : < http://books.openedition.org/cemca/2601>. ISBN : 9782821846234. DOI : 10.4000/ " +
+                "books.cemca.2601.Ce document a ete genere automatiquement le 25 avril 2019.Il est issu d'une numerisation par " +
+                "reconnaissance optique de caracteres. " +
+                "© Centro de estudios mexicanos y centroamericanos, 1988 " +
+                "Conditions d’utilisation: http://www.openedition.org/6540");
+            actualArticle.PdfText = stringBuilder;
+            actualArticle = articleParser.ParsePdfText(actualArticle);
+            Article expectedArticle = new Article();
+            expectedArticle.PdfText = stringBuilder;
+            expectedArticle.Autor = "Alberro Solange";
+            expectedArticle.Title = "Inquisition et societe au Mexique: 1571 - 170";
+            expectedArticle.Year = "2019";
+            expectedArticle.Journal.Title = "BCHmc";
+            expectedArticle.Journal.Number = "2019";
+            expectedArticle.Journal.Volume = "1";
+            expectedArticle.IsBook = false;
             AssertAll(expectedArticle, actualArticle);
         }
 
@@ -70,6 +114,7 @@ namespace ArticleParserTest
             expectedArticle.Title = "Qu'est-ce qu'un systeme philosophique";
             expectedArticle.Town = "Paris";
             expectedArticle.Year = "2012";
+            expectedArticle.IsBook = true;
 
             AssertAll(expectedArticle, actualArticle);
         }
@@ -102,6 +147,31 @@ namespace ArticleParserTest
             expectedArticle.Title = "Histoire et société en Occident musulman au Moyen Âge";
             expectedArticle.Town = "Madrid";
             expectedArticle.Year = "1995";
+            expectedArticle.IsBook = true;
+
+            AssertAll(expectedArticle, actualArticle);
+        }
+
+        [TestMethod]
+        public void BookTest3()
+        {
+            Patterns patterns = new Patterns();
+            Log log = new Log();
+            ArticleParser articleParser = new ArticleParser(log, patterns);
+            Article actualArticle = new Article();
+            StringBuilder stringBuilder = new StringBuilder(
+                "Inquisition et societe au Mexique" +
+                "1571 - 1700 Solange Alberro" +                "DOI: 10.4000 / books.cemca.2601" +                "Editeur: Centro de estudios mexicanos y centroamericanos" +                "Annee d'edition : 1988" +                "Date de mise en ligne: 2 juin 2014" +                "Collection: Hors collection" +                "ISBN electronique: 9782821846234" +                "http://books.openedition.org" +                "Edition imprimee" +                "ISBN: 9789686029017" +                "Nombre de pages: 489" +                "Reference electronique" +                "ALBERRO, Solange.Inquisition et societe au Mexique: 1571-1700.Nouvelle edition[en ligne].Mexico :" +                "Centro de estudios mexicanos y centroamericanos, 1988(genere le 25 avril 2019).Disponible sur" +                "Internet : < http://books.openedition.org/cemca/2601>. ISBN : 9782821846234. DOI : 10.4000/" +                "books.cemca.2601." +                "Ce document a ete genere automatiquement le 25 avril 2019.Il est issu d'une numerisation par" +                "reconnaissance optique de caracteres." +                "© Centro de estudios mexicanos y centroamericanos, 1988" +                "Conditions dТutilisation : " +
+                "http://www.openedition.org/6540");
+            actualArticle.PdfText = stringBuilder;
+            actualArticle = articleParser.ParsePdfText(actualArticle);
+            Article expectedArticle = new Article();
+            expectedArticle.PdfText = stringBuilder;
+            expectedArticle.Autor = "Alberro Solange";
+            expectedArticle.Title = "Inquisition et societe au Mexique. 1571-1700";
+            expectedArticle.Town = "Mexico";
+            expectedArticle.Year = "1988";
+            expectedArticle.IsBook = true;
 
             AssertAll(expectedArticle, actualArticle);
         }
@@ -115,6 +185,7 @@ namespace ArticleParserTest
             Assert.AreEqual(expectedArticle.Journal.Title, actualArticle.Journal.Title);
             Assert.AreEqual(expectedArticle.Journal.Number, actualArticle.Journal.Number);
             Assert.AreEqual(expectedArticle.Journal.Volume, actualArticle.Journal.Volume);
+            Assert.AreEqual(expectedArticle.IsBook, actualArticle.IsBook);
         }
     }
 }
